@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,9 +25,10 @@ namespace BattleShip
                     {
                         case ConsoleKey.Enter:
                             Console.Clear();
-                            gameBoard.DisplayBoard();
+                            gameBoard.DisplayBoard(); //Display the game board na to
                             Console.ReadKey();
-                            if (Console.ReadKey().Key == ConsoleKey.Escape)
+
+                            if (Console.ReadKey().Key == ConsoleKey.Escape) // back to main menu
                             {
                                 Console.Clear();
                                 continue;
@@ -36,6 +38,7 @@ namespace BattleShip
                         case ConsoleKey.F1:
                             Console.Clear();
                             menu.Tutorial();
+
                             if (Console.ReadKey().Key == ConsoleKey.Escape)
                             {
                                 Console.Clear();

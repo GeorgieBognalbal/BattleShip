@@ -13,16 +13,29 @@ namespace BattleShip
         public void DisplayBoard()
         {
             Console.WriteLine(@"     
-     A B C D E F G H I J
-     -------------------");
+       A   B   C   D   E   F   G   H   I   J
+     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
             for (int i = 0; i < 10; i++)
             {
-                Console.Write((i + 1).ToString().PadLeft(2) + " | ");
+                Console.Write((i + 1).ToString().PadLeft(2) + "   ║");
                 for (int j = 0; j < 10; j++)
                 {
-                    Console.Write(grid[i, j] + "~ ");
+                    Console.Write(grid[i, j] + " ~  ");
+                    if (j == 8)
+                    {
+                        Console.Write(" ~ ║");
+                        break;
+                    }
                 }
                 Console.WriteLine();
+                if (i == 9)
+                {
+                    Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+                }
+                else
+                {
+                    Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+                }
             }
         }
     }

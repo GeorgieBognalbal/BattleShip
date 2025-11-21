@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BattleShip
 {
@@ -11,49 +7,55 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
-            Interface menu = new Interface();
-            Board gameBoard = new Board();
+            Console.CursorVisible = false;
+            Board playerBoard = new Board();
+            PlacementManager pm = new PlacementManager();
 
             while (true)
-            try
             {
-                menu.MainMenu();
-                Console.CursorVisible = false;
-                var key = Console.ReadKey();
+                playerBoard.MainMenu();
+                var key = Console.ReadKey(true);
 
-                    switch (key.Key)
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.Clear();
+
+// ============================Ships na for placement Stage============================
+                    var ships = new List<Ship>()
                     {
-                        case ConsoleKey.Enter:
-                            Console.Clear();
-                            gameBoard.DisplayBoard(); //Display the game board na to
-                            Console.ReadKey();
+                        new Ship("Destroyer", 2, Orientation.Horizontal),
+                        new Ship("Submarine", 3, Orientation.Horizontal),
+                        new Ship("Cruiser", 3, Orientation.Horizontal),
+                        new Ship("Battleship", 4, Orientation.Horizontal),
+                        new Ship("Carrier", 5, Orientation.Horizontal)
+                    };
 
-                            if (Console.ReadKey().Key == ConsoleKey.Escape) // back to main menu
-                            {
-                                Console.Clear();
-                                continue;
-                            }
-                            break;
+// ============================All stored ships and boardInfo here after placement============================
+                    pm.PlaceAllShips(playerBoard, ships);
 
-                        case ConsoleKey.F1:
-                            Console.Clear();
-                            menu.Tutorial();
+                    Console.Clear();
+                    Console.WriteLine("Ship placement finished!");
+                    Console.WriteLine("Press any key to show your board...");
+                    Console.ReadKey(true);
 
-                            if (Console.ReadKey().Key == ConsoleKey.Escape)
-                            {
-                                Console.Clear();
-                                continue;
-                            }
-                            break;
+// ============================Over view ng board after all ships are placed==================================
+                    Console.Clear();
+                    playerBoard.Draw(true);
+                    Console.WriteLine("\nPress Esc to return to menu.");
+                    Console.ReadKey(true);
+                }
+                else if (key.Key == ConsoleKey.T)
+                {
+                    Console.Clear();
+                    playerBoard.Tutorial();
+                    Console.ReadKey(true);
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    Environment.Exit(0);
+                }
 
-                        case ConsoleKey.Escape:
-                            Environment.Exit(0);
-                            break;
-                    }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.Clear();
             }
         }
     }

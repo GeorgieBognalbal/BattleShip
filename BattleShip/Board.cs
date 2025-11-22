@@ -57,13 +57,14 @@ namespace BattleShip
 ");
         }
         public char[,] Cells { get; private set; }
+        public char[,] Hidden { get; private set; }
         public int Size { get; private set; } = 10;
 
         public Board()
         {
             Cells = new char[Size, Size];
 
-            // Fill with water '~'
+            // Fill with water
             for (int r = 0; r < Size; r++)
             {
                 for (int c = 0; c < Size; c++)
@@ -89,11 +90,11 @@ namespace BattleShip
                     char cell = Cells[i, j];
 
                     if (!showShips && cell == 'S')
-                        cell = '~'; // hide ship
+                        cell = '~';
 
                     Console.Write(" " + cell + " ");
 
-                    if (j < 9) Console.Write("│");
+                    if (j < 9) Console.Write("║");
                 }
 
                 Console.WriteLine("║");
@@ -104,6 +105,43 @@ namespace BattleShip
 
             Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
         }
+
+//==========================================================================================================================
+//==========================================HIDE THE SHIPS IN THE TRUE ARRAY================================================
+        public char[,] hiddenBoard = new char[10, 10];
+
+        public void DrawHiddenBoard(bool HideShips)
+        {
+            Console.WriteLine(@"     
+       A   B   C   D   E   F   G   H   I   J
+     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Write((i + 1).ToString().PadLeft(2) + "   ║");
+
+                for (int j = 0; j < 10; j++)
+                {
+                    char cell = hiddenBoard[i, j]; // pass ng array para magamit sa loop
+
+                    if (HideShips == true)
+                        cell = '~';
+
+                    Console.Write(" " + cell + " ");
+
+                    if (j < 9) Console.Write("║");
+                }
+
+                Console.WriteLine("║");
+
+                if (i < 9)
+                    Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+            }
+
+            Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+        }
+//==========================================================================================================================
+//==========================================================================================================================
 
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)
         {
@@ -137,5 +175,7 @@ namespace BattleShip
                     Cells[row + i, col] = 'S';
             }
         }
+
+
     }
 }

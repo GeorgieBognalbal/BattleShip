@@ -41,6 +41,14 @@ namespace BattleShip
 // ============================Over view ng board after all ships are placed==================================
                     Console.Clear();
                     playerBoard.Draw(true);
+                    Console.WriteLine("Press ENTER to Start match...");
+                    Console.ReadKey(true);
+
+                    //============================Show the board with hidden ships==================================================
+                    Console.Clear();
+                    playerBoard.DrawHiddenBoard(true);
+                    Console.ReadKey();
+
                     Console.WriteLine("\nPress Esc to return to menu.");
                     Console.ReadKey(true);
                 }

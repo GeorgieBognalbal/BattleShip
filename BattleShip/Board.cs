@@ -137,7 +137,7 @@ namespace BattleShip
 
         public void DrawHiddenBoard(bool HideShips)
         {
-            Console.WriteLine(@"     
+            Console.WriteLine(@"      
        A   B   C   D   E   F   G   H   I   J
      ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
 
@@ -147,10 +147,8 @@ namespace BattleShip
 
                 for (int j = 0; j < 10; j++)
                 {
-                    char cell = ShipCoverDisplay[i, j]; // pass ng array para magamit sa loop
+                    char cell = ShipCoverDisplay[i, j] = '~';
 
-                    if (HideShips == true)
-                        cell = '~';
 
                     Console.Write(" " + cell + " ");
 
@@ -164,9 +162,10 @@ namespace BattleShip
             }
 
             Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+
         }
-//==========================================================================================================================
-//==========================================================================================================================
+        //==========================================================================================================================
+        //==========================================================================================================================
 
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)
         {

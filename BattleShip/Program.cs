@@ -18,6 +18,7 @@ namespace BattleShip
             Thread.Sleep(500);
             Board playerBoard = new Board();
             PlacementManager pm = new PlacementManager();
+            BattleLogic battleLogic = new BattleLogic();
 
             while (true)
             {
@@ -59,14 +60,8 @@ namespace BattleShip
                     {
                         Console.Clear();
 
-                        playerBoard.header_Player1();
-                        playerBoard.DrawHiddenBoard(true);
-
-                        BattleLogic battleLogic = new BattleLogic();
                         battleLogic.Player1(playerBoard);
 
-                        Console.Clear();
-                        playerBoard.DrawHiddenBoard(true);
 
                     }   
                 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace BattleShip
 {
@@ -7,20 +10,27 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
+            InputSimulator inputSimulator = new InputSimulator();
+            inputSimulator.Keyboard.KeyPress(VirtualKeyCode.F11);
+
             Console.CursorVisible = false;
+
+            Thread.Sleep(500);
             Board playerBoard = new Board();
             PlacementManager pm = new PlacementManager();
 
             while (true)
             {
+
                 playerBoard.MainMenu();
                 var key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-
-// ============================Ships na for placement Stage============================
+                    inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.ADD);
+                    Thread.Sleep(500);
+                    // ============================Ships na for placement Stage============================
                     var ships = new List<Ship>()
                     {
                         new Ship("Destroyer", 2, Orientation.Horizontal),
@@ -42,15 +52,23 @@ namespace BattleShip
                     Console.Clear();
                     playerBoard.Draw(true);
                     Console.WriteLine("Press ENTER to Start match...");
-                    Console.ReadKey(true);
+                    var inputStart = Console.ReadKey(true);
 
-                    //============================Show the board with hidden ships==================================================
-                    Console.Clear();
-                    playerBoard.DrawHiddenBoard(true);
-                    Console.ReadKey();
+//============================Start of Game===================================================================
+                    if (inputStart.Key == ConsoleKey.Enter)
+                    {
+                        Console.Clear();
 
-                    Console.WriteLine("\nPress Esc to return to menu.");
-                    Console.ReadKey(true);
+                        playerBoard.header_Player1();
+                        playerBoard.DrawHiddenBoard(true);
+
+                        BattleLogic battleLogic = new BattleLogic();
+                        battleLogic.Player1(playerBoard);
+
+                        Console.Clear();
+                        playerBoard.DrawHiddenBoard(true);
+
+                    }   
                 }
                 else if (key.Key == ConsoleKey.T)
                 {

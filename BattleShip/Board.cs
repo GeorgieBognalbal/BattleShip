@@ -13,6 +13,26 @@ namespace BattleShip
 (__)  \____/\_/\_/ \___)(____)\_)(_/(____)\_)__) (__)       (____/ (__)\_/\_/ \___/(____)");
         }
 
+        public void header_Player1()
+        {
+            Console.WriteLine(@"
+ ____  __     __   _  _  ____  ____     __  
+(  _ \(  )   / _\ ( \/ )(  __)(  _ \   /  \ 
+ ) __// (_/\/    \ )  /  ) _)  )   /  (_/ / 
+(__)  \____/\_/\_/(__/  (____)(__\_)   (__)  
+");
+        }
+
+        public void header_Player2()
+        {
+            Console.WriteLine(@"
+ ____  __     __   _  _  ____  ____    ____ 
+(  _ \(  )   / _\ ( \/ )(  __)(  _ \  (___ \
+ ) __// (_/\/    \ )  /  ) _)  )   /   / __/
+(__)  \____/\_/\_/(__/  (____)(__\_)  (____)
+");
+        }
+
         public void MainMenu()
         {
             Console.WriteLine(@"
@@ -30,16 +50,22 @@ namespace BattleShip
 
 
 
-                                       __________         __    __  .__           _________.__    .__              
-                                       \______   \_____ _/  |__/  |_|  |   ____  /   _____/|  |__ |__|_____  ______
-                                        |    |  _/\__  \\   __\   __\  | _/ __ \ \_____  \ |  |  \|  \____ \/  ___/
-                                        |    |   \ / __ \|  |  |  | |  |_\  ___/ /        \|   Y  \  |  |_> >___ \ 
-                                        |______  /(____  /__|  |__| |____/\___  >_______  /|___|  /__|   __/____  >
-                                               \/      \/                     \/        \/      \/   |__|       \/ 
-                                                                
-                                                             Press Enter to Start the Game
-                                                               Press T for Game Tutorial
-                                                                  Press Esc to Exit       
+                             ███████████             █████     █████    ████            █████████  █████       ███           
+                            ▒▒███▒▒▒▒▒███           ▒▒███     ▒▒███    ▒▒███           ███▒▒▒▒▒███▒▒███       ▒▒▒            
+                             ▒███    ▒███  ██████   ███████   ███████   ▒███   ██████ ▒███    ▒▒▒  ▒███████   ████  ████████ 
+                             ▒██████████  ▒▒▒▒▒███ ▒▒▒███▒   ▒▒▒███▒    ▒███  ███▒▒███▒▒█████████  ▒███▒▒███ ▒▒███ ▒▒███▒▒███
+                             ▒███▒▒▒▒▒███  ███████   ▒███      ▒███     ▒███ ▒███████  ▒▒▒▒▒▒▒▒███ ▒███ ▒███  ▒███  ▒███ ▒███
+                             ▒███    ▒███ ███▒▒███   ▒███ ███  ▒███ ███ ▒███ ▒███▒▒▒   ███    ▒███ ▒███ ▒███  ▒███  ▒███ ▒███
+                             ███████████ ▒▒████████  ▒▒█████   ▒▒█████  █████▒▒██████ ▒▒█████████  ████ █████ █████ ▒███████ 
+                            ▒▒▒▒▒▒▒▒▒▒▒   ▒▒▒▒▒▒▒▒    ▒▒▒▒▒     ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒   ▒▒▒▒▒▒▒▒▒  ▒▒▒▒ ▒▒▒▒▒ ▒▒▒▒▒  ▒███▒▒▒  
+                                                                                                                    ▒███     
+                                                                                                                    █████    
+                                                                                                                   ▒▒▒▒▒      
+                                                                 Press Enter to Start the Game                                 
+                                                                   Press T for Game Tutorial                                   
+                                                                      Press Esc to Exit                                         
+
+
 ");
         }
 
@@ -56,20 +82,19 @@ namespace BattleShip
                                                            Game tutorial coming soon...
 ");
         }
-        public char[,] Cells { get; private set; }
         public char[,] Hidden { get; private set; }
         public int Size { get; private set; } = 10;
 
         public Board()
         {
-            Cells = new char[Size, Size];
+            Hidden = new char[Size, Size];
 
             // Fill with water
             for (int r = 0; r < Size; r++)
             {
                 for (int c = 0; c < Size; c++)
                 {
-                    Cells[r, c] = '~';
+                    Hidden[r, c] = '~';
                 }
             }
         }
@@ -87,7 +112,7 @@ namespace BattleShip
 
                 for (int j = 0; j < 10; j++)
                 {
-                    char cell = Cells[i, j];
+                    char cell = Hidden[i, j];
 
                     if (!showShips && cell == 'S')
                         cell = '~';
@@ -108,7 +133,7 @@ namespace BattleShip
 
 //==========================================================================================================================
 //==========================================HIDE THE SHIPS IN THE TRUE ARRAY================================================
-        public char[,] hiddenBoard = new char[10, 10];
+        public char[,] ShipCoverDisplay = new char[10, 10];
 
         public void DrawHiddenBoard(bool HideShips)
         {
@@ -122,7 +147,7 @@ namespace BattleShip
 
                 for (int j = 0; j < 10; j++)
                 {
-                    char cell = hiddenBoard[i, j]; // pass ng array para magamit sa loop
+                    char cell = ShipCoverDisplay[i, j]; // pass ng array para magamit sa loop
 
                     if (HideShips == true)
                         cell = '~';
@@ -150,14 +175,14 @@ namespace BattleShip
                 if (col + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Cells[row, col + i] != '~') return false;
+                    if (Hidden[row, col + i] != '~') return false;
             }
             else // Vertical
             {
                 if (row + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Cells[row + i, col] != '~') return false;
+                    if (Hidden[row + i, col] != '~') return false;
             }
             return true;
         }
@@ -167,12 +192,12 @@ namespace BattleShip
             if (orientation == Orientation.Horizontal)
             {
                 for (int i = 0; i < length; i++)
-                    Cells[row, col + i] = 'S';
+                    Hidden[row, col + i] = 'S';
             }
             else
             {
                 for (int i = 0; i < length; i++)
-                    Cells[row + i, col] = 'S';
+                    Hidden[row + i, col] = 'S';
             }
         }
 

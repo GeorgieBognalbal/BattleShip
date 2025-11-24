@@ -20,17 +20,17 @@ namespace BattleShip
             PlacementManager pm = new PlacementManager();
             BattleLogic battleLogic = new BattleLogic();
 
+            playerBoard.MainMenu();
             while (true)
             {
-
-                playerBoard.MainMenu();
                 var key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
                     inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.ADD);
-                    Thread.Sleep(500);
+                    inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.ADD);
+                    Thread.Sleep(200);
                     // ============================Ships na for placement Stage============================
                     var ships = new List<Ship>()
                     {

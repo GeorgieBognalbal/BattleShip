@@ -149,8 +149,20 @@ namespace BattleShip
                 {
                     char cell = ShipCoverDisplay[i, j] = '~';
 
+                    if (Hidden[i, j] == 'S')
+                    {
+                        cell = '~';
+                    } 
+                    else if (Hidden[i, j] == 'O') 
+                    {
+                        cell = 'O';
+                    }
+                    else if (Hidden[i, j] == 'X')
+                    {
+                        cell = 'X';
+                    }
 
-                    Console.Write(" " + cell + " ");
+                        Console.Write(" " + cell + " ");
 
                     if (j < 9) Console.Write("║");
                 }

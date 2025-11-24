@@ -13,14 +13,14 @@ namespace BattleShip
         {
             if (board.Hidden[r, c] == '~')
             {
-                board.Hidden[r, c] = 'O';
-                board.ShipCoverDisplay[r, c] = 'O';
+                board.Hidden[r, c] = 'X';
+                board.ShipCoverDisplay[r, c] = 'X';
                 Console.WriteLine("MISS");
             }
             else if (board.Hidden[r, c] == 'S')
             {
-                board.Hidden[r, c] = 'X';
-                board.ShipCoverDisplay[r, c] = 'X';
+                board.Hidden[r, c] = 'O';
+                board.ShipCoverDisplay[r, c] = 'O';
                 Console.WriteLine("HIT!");
             }
             else if (board.Hidden[r, c] == 'X' || board.Hidden[r, c] == 'O')

@@ -16,10 +16,12 @@ namespace BattleShip
 
         public void PlaceSingleShip(Board board, Ship ship)
         {
+            Design design = new Design();
+
             while (true)
             {
                 Console.Clear();
-                board.PlacementStage_Header();
+                design.PlacementStage_Header();
                 board.Draw(true);
 
                 Console.WriteLine($"\nPlacing {ship.Name} (length {ship.Length})");

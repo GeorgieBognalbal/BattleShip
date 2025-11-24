@@ -32,10 +32,12 @@ namespace BattleShip
 
         public void Player1(Board board)
         {
+            Design design = new Design();
+
             while (true)
             {
                 Console.Clear();
-                board.header_Player1();
+                design.header_Player1();
                 board.DrawHiddenBoard(true);
 
                 Console.Write("Row (1-10): ");

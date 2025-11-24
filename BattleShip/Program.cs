@@ -17,10 +17,11 @@ namespace BattleShip
 
             Thread.Sleep(500);
             Board playerBoard = new Board();
+            Design design = new Design();
             PlacementManager pm = new PlacementManager();
             BattleLogic battleLogic = new BattleLogic();
 
-            playerBoard.MainMenu();
+            design.MainMenu();
             while (true)
             {
                 var key = Console.ReadKey(true);
@@ -68,7 +69,7 @@ namespace BattleShip
                 else if (key.Key == ConsoleKey.T)
                 {
                     Console.Clear();
-                    playerBoard.Tutorial();
+                    design.Tutorial();
                     Console.ReadKey(true);
                 }
                 else if (key.Key == ConsoleKey.Escape)

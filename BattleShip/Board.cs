@@ -5,11 +5,13 @@ namespace BattleShip
     public class Board
     {
         public char[,] Hidden { get; private set; }
+        public char[,] BotHidden { get; private set; }
         public int Size { get; private set; } = 10;
 
         public Board()
         {
             Hidden = new char[Size, Size];
+            BotHidden = new char[Size, Size];
 
             // Fill with water
             for (int r = 0; r < Size; r++)
@@ -17,6 +19,7 @@ namespace BattleShip
                 for (int c = 0; c < Size; c++)
                 {
                     Hidden[r, c] = '~';
+                    BotHidden[r, c] = '~';
                 }
             }
         }
@@ -60,7 +63,7 @@ namespace BattleShip
         public void DrawHiddenBoard(bool HideShips)
         {
             Console.WriteLine(@"      
-       A   B   C   D   E   F   G   H   I   J
+       A   B   C   D   E   F   G   H   I   J  
      ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
 
             for (int i = 0; i < 10; i++)
@@ -101,6 +104,58 @@ namespace BattleShip
         //==========================================================================================================================
         //==========================================================================================================================
 
+
+        public static class BoardDisplay
+        {
+            public static void ShowSideBySide(Board board)
+            {
+                int size = board.Size;
+
+                char[,] A = board.Hidden;
+                char[,] B = board.BotHidden;
+
+                Console.WriteLine(@"
+       A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J
+     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗         ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+
+                for (int r = 0; r < size; r++)
+                {
+                    
+                    Console.Write((r + 1).ToString().PadLeft(2) + "   ║");
+
+                    for (int c = 0; c < size; c++)
+                    {
+                        char cell = A[r, c];
+                        if (cell == 'S') cell = '~'; 
+                        Console.Write(" " + cell + " ");
+                        if (c < size - 1) Console.Write("║");
+                    }
+
+                    Console.Write("║    ");
+
+                    Console.Write((r + 1).ToString().PadLeft(2) + "   ║");
+
+                    for (int c = 0; c < size; c++)
+                    {
+                        char cell = B[r, c];
+                        if (cell == 'S') cell = '~';
+                        Console.Write(" " + cell + " ");
+                        if (c < size - 1) Console.Write("║");
+                    }
+
+                    Console.WriteLine("║");
+
+                    if (r < size - 1)
+                    {
+                        Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣         ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+                    }
+                }
+
+                Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝         ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+            }
+        }
+
+
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)
         {
             if (orientation == Orientation.Horizontal)
@@ -108,14 +163,18 @@ namespace BattleShip
                 if (col + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row, col + i] != '~') return false;
+                    if (Hidden[row, col + i] != '~') 
+                        
+                return false;
             }
             else // Vertical
             {
                 if (row + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row + i, col] != '~') return false;
+                    if (Hidden[row + i, col] != '~') 
+               
+                return false;
             }
             return true;
         }

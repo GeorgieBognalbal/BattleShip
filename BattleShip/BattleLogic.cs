@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static BattleShip.Board;
 
 namespace BattleShip
 {
@@ -38,7 +39,7 @@ namespace BattleShip
             {
                 Console.Clear();
                 design.header_Player1();
-                board.DrawHiddenBoard(true);
+                Board.BoardDisplay.ShowSideBySide(board);
 
                 Console.Write("Row (1-10): ");
                 if (!int.TryParse(Console.ReadLine(), out int row) || row < 1 || row > 10)

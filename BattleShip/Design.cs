@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BattleShip
 {
-    internal class Design
+    internal class Design //ydcbdcdcndcj
     {
         public void PlacementStage_Header()
         {

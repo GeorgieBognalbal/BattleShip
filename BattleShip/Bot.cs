@@ -11,9 +11,6 @@ namespace BattleShip
     {
         public void botBoard()
         {
-            char[,] hidden_BotBoard = new char[10, 10];
-            char[,] display_BotBoard = new char[10, 10];
-        
 
         }
 

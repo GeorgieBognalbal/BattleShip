@@ -6,6 +6,7 @@ namespace BattleShip
     {
         public char[,] Hidden { get; private set; }
         public char[,] BotHidden { get; private set; }
+
         public int Size { get; private set; } = 10;
 
         public Board()
@@ -13,7 +14,6 @@ namespace BattleShip
             Hidden = new char[Size, Size];
             BotHidden = new char[Size, Size];
 
-            // Fill with water
             for (int r = 0; r < Size; r++)
             {
                 for (int c = 0; c < Size; c++)
@@ -24,8 +24,7 @@ namespace BattleShip
             }
         }
 
-//==========================================================================================================================
-//==========================================PLACEMENT STAGE BOARD===========================================================
+        //=================== Player Board Draw (Show / Hide Ships) ===================
         public void Draw(bool showShips)
         {
             Console.WriteLine(@"     
@@ -57,65 +56,22 @@ namespace BattleShip
             Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
         }
 
-//==========================================================================================================================
-//==========================================HIDE THE SHIPS IN THE TRUE ARRAY================================================
-        public char[,] ShipCoverDisplay = new char[10, 10];
-
-        public void DrawHiddenBoard(bool HideShips)
+        //============================ Sync Bot Display =============================
+        public void SyncBotBoard(char[,] botBoard)
         {
-            Console.WriteLine(@"      
-       A   B   C   D   E   F   G   H   I   J  
-     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
-
-            for (int i = 0; i < 10; i++)
-            {
-                Console.Write((i + 1).ToString().PadLeft(2) + "   ║");
-
-                for (int j = 0; j < 10; j++)
-                {
-                    char cell = ShipCoverDisplay[i, j] = '~';
-
-                    if (Hidden[i, j] == 'S')
-                    {
-                        cell = '~';
-                    } 
-                    else if (Hidden[i, j] == 'O') 
-                    {
-                        cell = 'O';
-                    }
-                    else if (Hidden[i, j] == 'X')
-                    {
-                        cell = 'X';
-                    }
-
-                        Console.Write(" " + cell + " ");
-
-                    if (j < 9) Console.Write("║");
-                }
-
-                Console.WriteLine("║");
-
-                if (i < 9)
-                    Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
-            }
-
-            Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
-
+            for (int r = 0; r < 10; r++)
+                for (int c = 0; c < 10; c++)
+                    BotHidden[r, c] = botBoard[r, c];
         }
 
-
-//==========================================================================================================================
-//=============================================SIDE BY SIDE BOARD===========================================================
-
-
+        //============================ Side by Side Display ==========================
         public static class BoardDisplay
         {
             public static void ShowSideBySide(Board board)
             {
                 int size = board.Size;
-
-                char[,] A = board.Hidden;
-                char[,] B = board.BotHidden;
+                char[,] HiddenBoardPlayer = board.Hidden;
+                char[,] HiddenBoardBot = board.BotHidden;
 
                 Console.WriteLine(@"
        A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J
@@ -123,13 +79,11 @@ namespace BattleShip
 
                 for (int r = 0; r < size; r++)
                 {
-                    
                     Console.Write((r + 1).ToString().PadLeft(2) + "   ║");
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = A[r, c];
-                        if (cell == 'S') cell = '~'; 
+                        char cell = HiddenBoardPlayer[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -140,8 +94,7 @@ namespace BattleShip
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = B[r, c];
-                        if (cell == 'S') cell = '~';
+                        char cell = HiddenBoardBot[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -158,27 +111,24 @@ namespace BattleShip
             }
         }
 
-
+        //============================ Placement Support =============================
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)
         {
             if (orientation == Orientation.Horizontal)
             {
-                if (col + length > Size) 
-            return false;
+                if (col + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row, col + i] != '~') 
-                        
-                return false;
+                    if (Hidden[row, col + i] != '~')
+                        return false;
             }
-            else // Vertical
+            else
             {
                 if (row + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row + i, col] != '~') 
-               
-                return false;
+                    if (Hidden[row + i, col] != '~')
+                        return false;
             }
             return true;
         }
@@ -196,7 +146,5 @@ namespace BattleShip
                     Hidden[row + i, col] = 'S';
             }
         }
-
-
     }
 }

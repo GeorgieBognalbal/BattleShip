@@ -17,7 +17,7 @@ namespace BattleShip
 (__)  \____/\_/\_/ \___)(____)\_)(_/(____)\_)__) (__)       (____/ (__)\_/\_/ \___/(____)");
         }
 
-        public void header_Player1()
+        public void header()
         {
             Console.WriteLine(@"
      ____  __     __   _  _  ____  ____     __                      ____   __  ____ 

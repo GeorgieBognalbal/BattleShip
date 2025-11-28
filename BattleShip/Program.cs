@@ -20,6 +20,7 @@ namespace BattleShip
             Design design = new Design();
             PlacementManager pm = new PlacementManager();
             BattleLogic battleLogic = new BattleLogic();
+            
 
             // BOT SETUP
             Bot bot = new Bot();
@@ -71,20 +72,21 @@ namespace BattleShip
 
                         design.header();
                         battleLogic.Player1(playerBoard);
-                    }
-                }
-                else if (key.Key == ConsoleKey.T)
-                {
-                    Console.Clear();
-                    design.Tutorial();
-                    Console.ReadKey(true);
-                }
-                else if (key.Key == ConsoleKey.Escape)
-                {
-                    Environment.Exit(0);
-                }
 
-                Console.Clear();
+                    }
+                    else if (key.Key == ConsoleKey.T)
+                    {
+                        Console.Clear();
+                        design.Tutorial();
+                        Console.ReadKey(true);
+                    }
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        Environment.Exit(0);
+                    }
+
+                    Console.Clear();
+                }
             }
         }
     }

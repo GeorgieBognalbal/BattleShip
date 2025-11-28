@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BattleShip
 {
@@ -17,9 +18,12 @@ namespace BattleShip
 
         public void Player1(Board board)
         {
+            Design design = new Design();
             PlayerBoard = board;
 
             Console.Clear();
+
+            design.header();
             Board.BoardDisplay.ShowSideBySide(board);
 
             while (true)
@@ -73,36 +77,40 @@ namespace BattleShip
         //========================= PLAYER TURN =========================
         private void PlayerTurn(int row, int col)
         {
-            if (Bot.hidden_BotBoard[row, col] == 'S')
+            while (true)
             {
-                Bot.hidden_BotBoard[row, col] = 'X';
-                Bot.display_BotBoard[row, col] = 'X';
+                if (Bot.hidden_BotBoard[row, col] == 'S')
+                {
+                    Bot.hidden_BotBoard[row, col] = 'X';
+                    Bot.display_BotBoard[row, col] = 'X';
 
-                Console.WriteLine("HIT!");
-
-                if (IsShipSunk(Bot.hidden_BotBoard))
+                    Console.WriteLine("HIT!");
+                    continue;
+                }
+                else if (IsShipSunk(Bot.hidden_BotBoard))
                 {
                     botShips--;
                     Console.WriteLine("You sunk a ship!");
                     Bot.ProcessShotResult(row, col, 'H', true);
+                    continue;
                 }
                 else
                 {
                     Bot.ProcessShotResult(row, col, 'H', false);
                 }
-            }
-            else if (Bot.display_BotBoard[row, col] == '~')
-            {
-                Bot.display_BotBoard[row, col] = 'O';
-                Console.WriteLine("MISS!");
-                Bot.ProcessShotResult(row, col, 'M', false);
-            }
+                if (Bot.display_BotBoard[row, col] == '~')
+                {
+                    Bot.display_BotBoard[row, col] = 'O';
+                    Console.WriteLine("MISS!");
+                    Bot.ProcessShotResult(row, col, 'M', false);
+                }
 
-            SyncBotDisplay();
+                SyncBotDisplay();
+            }
         }
 
         //========================= BOT TURN =============================
-        private void BotTurn()
+        public void BotTurn()
         {
             (int r, int c) = Bot.MakeMove();
 

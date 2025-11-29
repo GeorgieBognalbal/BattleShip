@@ -71,7 +71,7 @@ namespace BattleShip
                         Console.Clear();
 
                         design.header();
-                        battleLogic.Player1(playerBoard);
+                        battleLogic.GameStart(playerBoard);
 
                     }
                     else if (key.Key == ConsoleKey.T)

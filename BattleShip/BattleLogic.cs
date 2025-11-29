@@ -16,7 +16,7 @@ namespace BattleShip
             PlayerBoard.SyncBotBoard(Bot.display_BotBoard);
         }
 
-        public void Player1(Board board)
+        public void GameStart(Board board)
         {
             Design design = new Design();
             PlayerBoard = board;
@@ -57,9 +57,14 @@ namespace BattleShip
                     Console.WriteLine("\nBOT WINS!");
                     return;
                 }
+                else 
+                {
+                    Console.Clear();
+                    Board.BoardDisplay.ShowSideBySide(board);
+                    continue;
+                }
 
-                Console.Clear();
-                Board.BoardDisplay.ShowSideBySide(board);
+                
             }
         }
 

@@ -14,7 +14,6 @@ namespace BattleShip
             Hidden_PlayerBoard = new char[Size, Size];
             hidden_BotBoard = new char[Size, Size];
 
-            // Fill with water
             for (int r = 0; r < Size; r++)
             {
                 for (int c = 0; c < Size; c++)
@@ -70,11 +69,8 @@ namespace BattleShip
             Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
         }
 
-//==========================================================================================================================
-//==========================================HIDE THE SHIPS IN THE TRUE ARRAY================================================
-        public char[,] ShipCoverDisplay = new char[10, 10];
-
-        public void DrawHiddenBoard(bool HideShips)
+        //============================ Sync Bot Display =============================
+        public void SyncBotBoard(char[,] botBoard)
         {
             Console.WriteLine(@"      
        A   B   C   D   E   F   G   H   I   J  
@@ -101,26 +97,7 @@ namespace BattleShip
                         cell = 'X';
                     }
 
-                        Console.Write(" " + cell + " ");
-
-                    if (j < 9) Console.Write("║");
-                }
-
-                Console.WriteLine("║");
-
-                if (i < 9)
-                    Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
-            }
-
-            Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
-
-        }
-
-
-//==========================================================================================================================
-//=============================================SIDE BY SIDE BOARD===========================================================
-
-
+        //============================ Side by Side Display ==========================
         public static class BoardDisplay
         {
             public static void ShowSideBySide(Board board)
@@ -136,13 +113,11 @@ namespace BattleShip
 
                 for (int r = 0; r < size; r++)
                 {
-                    
                     Console.Write((r + 1).ToString().PadLeft(2) + "   ║");
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = A[r, c];
-                        if (cell == 'S') cell = '~'; 
+                        char cell = HiddenBoardPlayer[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -153,8 +128,7 @@ namespace BattleShip
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = B[r, c];
-                        if (cell == 'S') cell = '~';
+                        char cell = HiddenBoardBot[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -171,20 +145,19 @@ namespace BattleShip
             }
         }
 
-
+        //============================ Placement Support =============================
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)
         {
             if (orientation == Orientation.Horizontal)
             {
-                if (col + length > Size) 
-            return false;
+                if (col + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
                     if (Hidden_PlayerBoard[row, col + i] != '~') 
                         
                 return false;
             }
-            else // Vertical
+            else
             {
                 if (row + length > Size) return false;
 
@@ -209,7 +182,5 @@ namespace BattleShip
                     Hidden_PlayerBoard[row + i, col] = 'S';
             }
         }
-
-
     }
 }

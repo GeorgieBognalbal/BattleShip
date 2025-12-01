@@ -1,63 +1,151 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static BattleShip.Board;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BattleShip
 {
     internal class BattleLogic
     {
-        private void Fire(Board board, int r, int c)
+        public Bot Bot;
+        public Board PlayerBoard;
+
+        private int playerShips = 5;
+        private int botShips = 5;
+
+        private void SyncBotDisplay()
         {
-            if (board.Hidden[r, c] == '~')
-            {
-                board.Hidden[r, c] = 'X';
-                board.ShipCoverDisplay[r, c] = 'X';
-                Console.WriteLine("MISS");
-            }
-            else if (board.Hidden[r, c] == 'S')
-            {
-                board.Hidden[r, c] = 'O';
-                board.ShipCoverDisplay[r, c] = 'O';
-                Console.WriteLine("HIT!");
-            }
-            else if (board.Hidden[r, c] == 'X' || board.Hidden[r, c] == 'O')
-            {
-                Console.WriteLine("You already fired here. Try again.");
-            }
+            PlayerBoard.SyncBotBoard(Bot.display_BotBoard);
         }
 
-
-        public void Player1(Board board)
+        public void GameStart(Board board)
         {
             Design design = new Design();
+            PlayerBoard = board;
+
+            Console.Clear();
+
+            design.header();
+            Board.BoardDisplay.ShowSideBySide(board);
 
             while (true)
             {
-                Console.Clear();
-                design.header_Player1();
-                Board.BoardDisplay.ShowSideBySide(board);
+                Console.WriteLine("\nEnter attack coordinate (ex: B5): ");
 
-                Console.Write("Row (1-10): ");
-                if (!int.TryParse(Console.ReadLine(), out int row) || row < 1 || row > 10)
+                string input = Console.ReadLine().ToUpper();
+
+                if (!IsValidInput(input))
+                {
+                    Console.WriteLine("Invalid input!");
+                    Console.Clear();
                     continue;
+                }
 
-                int r = row - 1;
+                int col = input[0] - 'A';
+                int row = int.Parse(input.Substring(1)) - 1;
 
-                Console.Write("Column (A-J): ");
-                string colInput = Console.ReadLine().ToUpper();
-                if (colInput.Length != 1 || colInput[0] < 'A' || colInput[0] > 'J')
+                PlayerTurn(row, col);
+                if (botShips == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\nYOU WIN!");
+                    return;
+                }
+
+                BotTurn();
+                if (playerShips == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\nBOT WINS!");
+                    return;
+                }
+                else 
+                {
+                    Console.Clear();
+                    Board.BoardDisplay.ShowSideBySide(board);
                     continue;
+                }
 
-                int c = colInput[0] - 'A';
-
-                Fire(board, r, c);
-
-                Thread.Sleep(1000);
+                
             }
+        }
+
+        private bool IsValidInput(string input)
+        {
+            if (input.Length < 2) return false;
+            if (input[0] < 'A' || input[0] > 'J') return false;
+
+            if (!int.TryParse(input.Substring(1), out int r)) return false;
+            if (r < 1 || r > 10) return false;
+
+            return true;
+        }
+
+        //========================= PLAYER TURN =========================
+        private void PlayerTurn(int row, int col)
+        {
+            while (true)
+            {
+                if (Bot.hidden_BotBoard[row, col] == 'S')
+                {
+                    Bot.hidden_BotBoard[row, col] = 'X';
+                    Bot.display_BotBoard[row, col] = 'X';
+
+                    Console.WriteLine("HIT!");
+                    continue;
+                }
+                else if (IsShipSunk(Bot.hidden_BotBoard))
+                {
+                    botShips--;
+                    Console.WriteLine("You sunk a ship!");
+                    Bot.ProcessShotResult(row, col, 'H', true);
+                    continue;
+                }
+                else
+                {
+                    Bot.ProcessShotResult(row, col, 'H', false);
+                }
+                if (Bot.display_BotBoard[row, col] == '~')
+                {
+                    Bot.display_BotBoard[row, col] = 'O';
+                    Console.WriteLine("MISS!");
+                    Bot.ProcessShotResult(row, col, 'M', false);
+                }
+
+                SyncBotDisplay();
+            }
+        }
+
+        //========================= BOT TURN =============================
+        public void BotTurn()
+        {
+            (int r, int c) = Bot.MakeMove();
+
+            if (PlayerBoard.Hidden[r, c] == 'S')
+            {
+                PlayerBoard.Hidden[r, c] = 'X';
+
+                if (IsShipSunk(PlayerBoard.Hidden))
+                {
+                    playerShips--;
+                    Bot.ProcessShotResult(r, c, 'H', true);
+                }
+                else
+                {
+                    Bot.ProcessShotResult(r, c, 'H', false);
+                }
+            }
+            else if (PlayerBoard.Hidden[r, c] == '~')
+            {
+                PlayerBoard.Hidden[r, c] = 'O';
+                Bot.ProcessShotResult(r, c, 'M', false);
+            }
+        }
+
+        private bool IsShipSunk(char[,] grid)
+        {
+            foreach (char c in grid)
+                if (c == 'S')
+                    return false;
+            return true;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace BattleShip
 {
     internal class Bot
     {
+        public Board Board;
 
         private readonly Random _random = new Random();
         private static readonly int[] ShipSizes = { 5, 4, 3, 3, 2 };
@@ -35,7 +36,7 @@ namespace BattleShip
                         {
                             int currentRow = startRow + (isHorizontal ? 0 : i);
                             int currentCol = startCol + (isHorizontal ? i : 0);
-                            hidden_BotBoard[currentRow, currentCol] = 'S';
+                            Board.hidden_BotBoard[currentRow, currentCol] = 'S';
                         }
                         placed = true;
                     }
@@ -49,7 +50,7 @@ namespace BattleShip
                 int currentRow = r + (isHorizontal ? 0 : i);
                 int currentCol = c + (isHorizontal ? i : 0);
 
-                if (hidden_BotBoard[currentRow, currentCol] == 'S')
+                if (Board.hidden_BotBoard[currentRow, currentCol] == 'S')
                 {
                     return false;
                 }

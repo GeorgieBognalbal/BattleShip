@@ -6,20 +6,20 @@ namespace BattleShip
     internal class BattleLogic
     {
         public Bot Bot;
-        public Board PlayerBoard;
+        public Board Board;
 
         private int playerShips = 5;
         private int botShips = 5;
 
         private void SyncBotDisplay()
         {
-            PlayerBoard.SyncBotBoard(Bot.display_BotBoard);
+            Board.SyncBotBoard();
         }
 
         public void GameStart(Board board)
         {
             Design design = new Design();
-            PlayerBoard = board;
+            Board = board;
 
             Console.Clear();
 
@@ -50,7 +50,6 @@ namespace BattleShip
                     return;
                 }
 
-                BotTurn();
                 if (playerShips == 0)
                 {
                     Console.Clear();
@@ -79,64 +78,64 @@ namespace BattleShip
             return true;
         }
 
+        public int _lastHitRow = -1;
+        public int _lastHitCol = -1;
+        public bool _isHunting = true;
+
+        public void ProcessShotResult(int row, int col, char result, bool shipSunk)
+        {
+
+            Board.display_BotBoard[row, col] = result;
+
+            if (result == 'X')
+            {
+                if (shipSunk)
+                {
+                    _isHunting = true;
+                    _lastHitRow = -1;
+                    _lastHitCol = -1;
+                }
+                else
+                {
+                    _isHunting = false;
+                    _lastHitRow = row;
+                    _lastHitCol = col;
+                }
+            }
+        }
+
         //========================= PLAYER TURN =========================
         private void PlayerTurn(int row, int col)
         {
             while (true)
             {
-                if (Bot.hidden_BotBoard[row, col] == 'S')
+                if (Board.hidden_BotBoard[row, col] == 'S')
                 {
-                    Bot.hidden_BotBoard[row, col] = 'X';
-                    Bot.display_BotBoard[row, col] = 'X';
+                    Board.hidden_BotBoard[row, col] = 'X';
+                    Board.display_BotBoard[row, col] = 'X';
 
                     Console.WriteLine("HIT!");
                     continue;
                 }
-                else if (IsShipSunk(Bot.hidden_BotBoard))
+                else if (IsShipSunk(Board.hidden_BotBoard))
                 {
                     botShips--;
                     Console.WriteLine("You sunk a ship!");
-                    Bot.ProcessShotResult(row, col, 'H', true);
+                    ProcessShotResult(row, col, 'H', true);
                     continue;
                 }
                 else
                 {
-                    Bot.ProcessShotResult(row, col, 'H', false);
+                    ProcessShotResult(row, col, 'H', false);
                 }
-                if (Bot.display_BotBoard[row, col] == '~')
+                if (Board.display_BotBoard[row, col] == '~')
                 {
-                    Bot.display_BotBoard[row, col] = 'O';
+                    Board.display_BotBoard[row, col] = 'O';
                     Console.WriteLine("MISS!");
-                    Bot.ProcessShotResult(row, col, 'M', false);
+                    ProcessShotResult(row, col, 'M', false);
                 }
 
                 SyncBotDisplay();
-            }
-        }
-
-        //========================= BOT TURN =============================
-        public void BotTurn()
-        {
-            (int r, int c) = Bot.MakeMove();
-
-            if (PlayerBoard.Hidden[r, c] == 'S')
-            {
-                PlayerBoard.Hidden[r, c] = 'X';
-
-                if (IsShipSunk(PlayerBoard.Hidden))
-                {
-                    playerShips--;
-                    Bot.ProcessShotResult(r, c, 'H', true);
-                }
-                else
-                {
-                    Bot.ProcessShotResult(r, c, 'H', false);
-                }
-            }
-            else if (PlayerBoard.Hidden[r, c] == '~')
-            {
-                PlayerBoard.Hidden[r, c] = 'O';
-                Bot.ProcessShotResult(r, c, 'M', false);
             }
         }
 

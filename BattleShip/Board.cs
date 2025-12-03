@@ -5,36 +5,27 @@ namespace BattleShip
     public class Board
     {
         public char[,] Hidden_PlayerBoard { get; private set; }
-        public char[,] hidden_BotBoard { get; private set; }
-        public char[,] display_BotBoard { get; private set; }
-        public char[,] display_PlayerBoard { get; private set; }
+        public char[,] Hidden_BotBoard { get; private set; }
+        public char[,] Display_BotBoard { get; private set; }
+        public char[,] Display_PlayerBoard { get; private set; }
         public int Size { get; private set; } = 10;
 
-        public Board()
+        public void InitializeBoard()
         {
+            Size = 10;
             Hidden_PlayerBoard = new char[Size, Size];
-            hidden_BotBoard = new char[Size, Size];
+            Hidden_BotBoard = new char[Size, Size];
+            Display_PlayerBoard = new char[Size, Size];
+            Display_BotBoard = new char[Size, Size];
 
             for (int r = 0; r < Size; r++)
-            {
                 for (int c = 0; c < Size; c++)
                 {
                     Hidden_PlayerBoard[r, c] = '~';
-                    hidden_BotBoard[r, c] = '~';
+                    Hidden_BotBoard[r, c] = '~';
+                    Display_PlayerBoard[r, c] = '~';
+                    Display_BotBoard[r, c] = '~';
                 }
-            }
-        }
-
-        public void InitializeBoards()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    hidden_BotBoard[i, j] = '~';
-                    display_BotBoard[i, j] = '~';
-                }
-            }
         }
 
         //==========================================================================================================================
@@ -83,7 +74,7 @@ namespace BattleShip
 
                 for (int j = 0; j < 10; j++)
                 {
-                    char cell = display_PlayerBoard[i, j] = '~';
+                    char cell = Display_PlayerBoard[i, j] = '~';
 
                     if (Hidden_PlayerBoard[i, j] == 'S')
                     {
@@ -114,7 +105,7 @@ namespace BattleShip
                 int size = board.Size;
 
                 char[,] P = board.Hidden_PlayerBoard;
-                char[,] B = board.hidden_BotBoard;
+                char[,] B = board.Hidden_BotBoard;
 
                 Console.WriteLine(@"
        A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J

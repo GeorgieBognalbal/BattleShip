@@ -65,6 +65,21 @@ namespace BattleShip
 
                 
             }
+
+        }
+
+        private void BotTurn(Board playerBoard)
+        {
+            var (row, col, result) = Bot.MakeMove();
+
+            if (result == 'O')
+            {
+                Console.WriteLine($"BOT hits at {row + 1},{col + 1}");
+            }
+            else
+            {
+                Console.WriteLine($"BOT misses at {row + 1},{col + 1}");
+            }
         }
 
         private bool IsValidInput(string input)
@@ -85,7 +100,7 @@ namespace BattleShip
         public void ProcessShotResult(int row, int col, char result, bool shipSunk)
         {
 
-            Board.display_BotBoard[row, col] = result;
+            Board.Display_BotBoard[row, col] = result;
 
             if (result == 'X')
             {
@@ -109,15 +124,15 @@ namespace BattleShip
         {
             while (true)
             {
-                if (Board.hidden_BotBoard[row, col] == 'S')
+                if (Board.Hidden_BotBoard[row, col] == 'S')
                 {
-                    Board.hidden_BotBoard[row, col] = 'X';
-                    Board.display_BotBoard[row, col] = 'X';
+                    Board.Hidden_BotBoard[row, col] = 'X';
+                    Board.Display_BotBoard[row, col] = 'X';
 
                     Console.WriteLine("HIT!");
                     continue;
                 }
-                else if (IsShipSunk(Board.hidden_BotBoard))
+                else if (IsShipSunk(Board.Hidden_BotBoard))
                 {
                     botShips--;
                     Console.WriteLine("You sunk a ship!");
@@ -128,9 +143,9 @@ namespace BattleShip
                 {
                     ProcessShotResult(row, col, 'H', false);
                 }
-                if (Board.display_BotBoard[row, col] == '~')
+                if (Board.Display_BotBoard[row, col] == '~')
                 {
-                    Board.display_BotBoard[row, col] = 'O';
+                    Board.Display_BotBoard[row, col] = 'O';
                     Console.WriteLine("MISS!");
                     ProcessShotResult(row, col, 'M', false);
                 }

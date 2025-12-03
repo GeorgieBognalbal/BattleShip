@@ -4,22 +4,22 @@ namespace BattleShip
 {
     public class Board
     {
-        public char[,] Hidden { get; private set; }
-        public char[,] BotHidden { get; private set; }
+        public char[,] Hidden_PlayerBoard { get; private set; }
+        public char[,] Hidden_BotBoard { get; private set; }
 
         public int Size { get; private set; } = 10;
 
         public Board()
         {
-            Hidden = new char[Size, Size];
-            BotHidden = new char[Size, Size];
+            Hidden_PlayerBoard = new char[Size, Size];
+            Hidden_BotBoard = new char[Size, Size];
 
             for (int r = 0; r < Size; r++)
             {
                 for (int c = 0; c < Size; c++)
                 {
-                    Hidden[r, c] = '~';
-                    BotHidden[r, c] = '~';
+                    Hidden_PlayerBoard[r, c] = '~';
+                    Hidden_BotBoard[r, c] = '~';
                 }
             }
         }
@@ -37,7 +37,7 @@ namespace BattleShip
 
                 for (int j = 0; j < 10; j++)
                 {
-                    char cell = Hidden[i, j];
+                    char cell = Hidden_PlayerBoard[i, j];
 
                     if (!showShips && cell == 'S')
                         cell = '~';
@@ -61,7 +61,7 @@ namespace BattleShip
         {
             for (int r = 0; r < 10; r++)
                 for (int c = 0; c < 10; c++)
-                    BotHidden[r, c] = botBoard[r, c];
+                    Hidden_PlayerBoard[r, c] = botBoard[r, c];
         }
 
         //============================ Side by Side Display ==========================
@@ -70,8 +70,8 @@ namespace BattleShip
             public static void ShowSideBySide(Board board)
             {
                 int size = board.Size;
-                char[,] HiddenBoardPlayer = board.Hidden;
-                char[,] HiddenBoardBot = board.BotHidden;
+                char[,] HiddenBoardPlayer = board.Hidden_PlayerBoard;
+                char[,] HiddenBoardBot = board.Hidden_BotBoard;
 
                 Console.WriteLine(@"
        A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J
@@ -119,7 +119,7 @@ namespace BattleShip
                 if (col + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row, col + i] != '~')
+                    if (Hidden_PlayerBoard[row, col + i] != '~')
                         return false;
             }
             else
@@ -127,7 +127,7 @@ namespace BattleShip
                 if (row + length > Size) return false;
 
                 for (int i = 0; i < length; i++)
-                    if (Hidden[row + i, col] != '~')
+                    if (Hidden_PlayerBoard[row + i, col] != '~')
                         return false;
             }
             return true;
@@ -138,12 +138,12 @@ namespace BattleShip
             if (orientation == Orientation.Horizontal)
             {
                 for (int i = 0; i < length; i++)
-                    Hidden[row, col + i] = 'S';
+                    Hidden_PlayerBoard[row, col + i] = 'S';
             }
             else
             {
                 for (int i = 0; i < length; i++)
-                    Hidden[row + i, col] = 'S';
+                    Hidden_PlayerBoard[row + i, col] = 'S';
             }
         }
     }

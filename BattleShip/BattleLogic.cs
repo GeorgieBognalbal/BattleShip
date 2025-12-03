@@ -119,11 +119,11 @@ namespace BattleShip
         {
             (int r, int c) = Bot.MakeMove();
 
-            if (PlayerBoard.Hidden[r, c] == 'S')
+            if (PlayerBoard.Hidden_PlayerBoard[r, c] == 'S')
             {
-                PlayerBoard.Hidden[r, c] = 'X';
+                PlayerBoard.Hidden_PlayerBoard[r, c] = 'X';
 
-                if (IsShipSunk(PlayerBoard.Hidden))
+                if (IsShipSunk(PlayerBoard.Hidden_PlayerBoard))
                 {
                     playerShips--;
                     Bot.ProcessShotResult(r, c, 'H', true);
@@ -133,9 +133,9 @@ namespace BattleShip
                     Bot.ProcessShotResult(r, c, 'H', false);
                 }
             }
-            else if (PlayerBoard.Hidden[r, c] == '~')
+            else if (PlayerBoard.Hidden_PlayerBoard[r, c] == '~')
             {
-                PlayerBoard.Hidden[r, c] = 'O';
+                PlayerBoard.Hidden_PlayerBoard[r, c] = 'O';
                 Bot.ProcessShotResult(r, c, 'M', false);
             }
         }

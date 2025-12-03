@@ -30,7 +30,7 @@ namespace BattleShip
             // Copy real bot ships to the board object
             for (int r = 0; r < 10; r++)
                 for (int c = 0; c < 10; c++)
-                    playerBoard.BotHidden[r, c] = bot.hidden_BotBoard[r, c];
+                    playerBoard.Hidden_BotBoard[r, c] = bot.hidden_BotBoard[r, c];
 
             battleLogic.Bot = bot;
             battleLogic.PlayerBoard = playerBoard;

@@ -28,7 +28,6 @@ namespace BattleShip
             playerBoard.InitializeBoard();
             bot.PlaceShips();
 
-            // Provide bot and player board references to battle logic
             battleLogic.Bot = bot;
 
             // Show main menu

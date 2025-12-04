@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -64,7 +65,7 @@ namespace BattleShip
         private bool IsValidPlacement(int r, int c, int size, bool isHorizontal)
         {
             for (int i = 0; i < size; i++)
-                {
+            {
                 int currentRow = r + (isHorizontal ? 0 : i);
                 int currentCol = c + (isHorizontal ? i : 0);
 
@@ -76,27 +77,22 @@ namespace BattleShip
             return true;
 
         }
-        public (int row, int col) MakeMove()
+        public (int row, int col, char result) MakeMove(Board board)
         {
+            (int row, int col) shot;
+
             if (_isHunting)
-            {
-                return GetRandomValidShot();
-            }
-
+                shot = GetRandomValidShot();
             else
-            {
+                shot = GetTargetShot();
 
-                (int row, int col) shot = GetTargetShot();
+            // Shoot at the board to get the result
+            char result = board.ShootAt(shot.row, shot.col); // 'O' = hit, 'X' = miss
 
+            // Process shot result for bot AI
+            ProcessShotResult(shot.row, shot.col, result, false);
 
-                if (shot.row == -1)
-                {
-                    _isHunting = true;
-                    return GetRandomValidShot();
-                }
-                return shot;
-            }
-
+            return (shot.row, shot.col, result);
         }
         private (int, int) GetRandomValidShot()
         {
@@ -107,7 +103,7 @@ namespace BattleShip
                 row = _random.Next(10);
                 col = _random.Next(10);
 
-            } while (display_BotBoard[row, col] != '?');
+            } while (display_BotBoard[row, col] != '~');
 
             return (row, col);
         }
@@ -122,7 +118,7 @@ namespace BattleShip
 
                 if (r >= 0 && r < 10 && c >= 0 && c < 10)
                 {
-                    if (display_BotBoard[r, c] == '?')
+                    if (display_BotBoard[r, c] == '~')
                     {
                         return (r, c);
                     }
@@ -134,8 +130,26 @@ namespace BattleShip
         public void ProcessShotResult(int row, int col, char result, bool shipSunk)
         {
             display_BotBoard[row, col] = result;
+            char hitMarker = 'O';
+            char missMarker = 'X';
 
-            if (result == 'H')
+            if (result == hitMarker)
+            {
+                if (shipSunk)
+                {
+
+                    _isHunting = true;
+                    _lastHitRow = -1;
+                    _lastHitCol = -1;
+                }
+                else
+                {
+                    _isHunting = false;
+                    _lastHitRow = row;
+                    _lastHitCol = col;
+                }
+            }
+            else if (result == missMarker)
             {
                 if (shipSunk)
                 {

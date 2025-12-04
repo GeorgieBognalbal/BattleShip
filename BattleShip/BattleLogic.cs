@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Diagnostics.Eventing.Reader;
+using System.Threading;
 
 namespace BattleShip
 {
     internal class BattleLogic
     {
         public Bot Bot;
-        public Board PlayerBoard;
+        public Board Board;
 
         private int playerShips = 5;
         private int botShips = 5;
 
         private void SyncBotDisplay()
         {
-            PlayerBoard.SyncBotBoard(Bot.display_BotBoard);
+            Board.SyncBotBoard(Bot.display_BotBoard);
         }
 
         public void GameStart(Board board)
         {
             Design design = new Design();
-            PlayerBoard = board;
+            Board = board;
 
             Console.Clear();
 
@@ -35,6 +36,7 @@ namespace BattleShip
                 if (!IsValidInput(input))
                 {
                     Console.WriteLine("Invalid input!");
+                    Thread.Sleep(1000);
                     Console.Clear();
                     continue;
                 }
@@ -48,23 +50,23 @@ namespace BattleShip
                     Console.Clear();
                     Console.WriteLine("\nYOU WIN!");
                     return;
-                }
-
-                BotTurn();
-                if (playerShips == 0)
-                {
-                    Console.Clear();
-                    Console.WriteLine("\nBOT WINS!");
-                    return;
-                }
-                else 
-                {
+                } else {
                     Console.Clear();
                     Board.BoardDisplay.ShowSideBySide(board);
-                    continue;
-                }
-
-                
+                    BotTurn();
+                    if (playerShips == 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\nBOT WINS!");
+                        return;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Board.BoardDisplay.ShowSideBySide(board);
+                        continue;
+                    }
+                }           
             }
         }
 
@@ -82,61 +84,46 @@ namespace BattleShip
         //========================= PLAYER TURN =========================
         private void PlayerTurn(int row, int col)
         {
-            while (true)
+            char result = Board.ShootAt(row, col); // get 'O' for hit, 'X' for miss
+            if (result == 'O')
             {
-                if (Bot.hidden_BotBoard[row, col] == 'S')
-                {
-                    Bot.hidden_BotBoard[row, col] = 'X';
-                    Bot.display_BotBoard[row, col] = 'X';
-
-                    Console.WriteLine("HIT!");
-                    continue;
-                }
-                else if (IsShipSunk(Bot.hidden_BotBoard))
+                Console.WriteLine("HIT!");
+                Thread.Sleep(500);
+                if (IsShipSunk(Board.Hidden_BotBoard))
                 {
                     botShips--;
                     Console.WriteLine("You sunk a ship!");
-                    Bot.ProcessShotResult(row, col, 'H', true);
-                    continue;
                 }
-                else
-                {
-                    Bot.ProcessShotResult(row, col, 'H', false);
-                }
-                if (Bot.display_BotBoard[row, col] == '~')
-                {
-                    Bot.display_BotBoard[row, col] = 'O';
-                    Console.WriteLine("MISS!");
-                    Bot.ProcessShotResult(row, col, 'M', false);
-                }
-
-                SyncBotDisplay();
             }
+            else
+            {
+                Console.WriteLine("MISS!");
+                Thread.Sleep(500);
+            }
+
+            SyncBotDisplay();
         }
 
         //========================= BOT TURN =============================
         public void BotTurn()
         {
-            (int r, int c) = Bot.MakeMove();
+            Board board = Board;
+            var (row, col, result) = Bot.MakeMove(board); // Bot now shoots and gets result
 
-            if (PlayerBoard.Hidden_PlayerBoard[r, c] == 'S')
+            if (result == 'O')
             {
-                PlayerBoard.Hidden_PlayerBoard[r, c] = 'X';
-
-                if (IsShipSunk(PlayerBoard.Hidden_PlayerBoard))
+                Console.WriteLine($"BOT hits at {row + 1},{col + 1}");
+                if (IsShipSunk(Board.Hidden_PlayerBoard))
                 {
                     playerShips--;
-                    Bot.ProcessShotResult(r, c, 'H', true);
-                }
-                else
-                {
-                    Bot.ProcessShotResult(r, c, 'H', false);
+                    Console.WriteLine("BOT sunk one of your ships!");
+                    Thread.Sleep(1000);
                 }
             }
-            else if (PlayerBoard.Hidden_PlayerBoard[r, c] == '~')
+            else
             {
-                PlayerBoard.Hidden_PlayerBoard[r, c] = 'O';
-                Bot.ProcessShotResult(r, c, 'M', false);
+                Console.WriteLine($"BOT misses at {row + 1},{col + 1}");
+                Thread.Sleep(1000);
             }
         }
 

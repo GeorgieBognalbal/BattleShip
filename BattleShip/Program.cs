@@ -33,7 +33,7 @@ namespace BattleShip
                     playerBoard.Hidden_BotBoard[r, c] = bot.hidden_BotBoard[r, c];
 
             battleLogic.Bot = bot;
-            battleLogic.PlayerBoard = playerBoard;
+            battleLogic.Board = playerBoard;
 
             design.MainMenu();
 

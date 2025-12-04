@@ -6,6 +6,8 @@ namespace BattleShip
     {
         public char[,] Hidden_PlayerBoard { get; private set; }
         public char[,] Hidden_BotBoard { get; private set; }
+        public char[,] Display_BotBoard { get; private set; }
+        public char[,] Display_PlayerBoard { get; private set; }
 
         public int Size { get; private set; } = 10;
 
@@ -13,6 +15,8 @@ namespace BattleShip
         {
             Hidden_PlayerBoard = new char[Size, Size];
             Hidden_BotBoard = new char[Size, Size];
+            Display_BotBoard = new char[Size, Size];
+            Display_PlayerBoard = new char[Size, Size];
 
             for (int r = 0; r < Size; r++)
             {
@@ -20,6 +24,8 @@ namespace BattleShip
                 {
                     Hidden_PlayerBoard[r, c] = '~';
                     Hidden_BotBoard[r, c] = '~';
+                    Display_BotBoard[r, c] = '~';
+                    Display_PlayerBoard[r, c] = '~';
                 }
             }
         }
@@ -83,7 +89,7 @@ namespace BattleShip
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = HiddenBoardPlayer[r, c] = '~';
+                        char cell = HiddenBoardBot[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -94,7 +100,7 @@ namespace BattleShip
 
                     for (int c = 0; c < size; c++)
                     {
-                        char cell = HiddenBoardBot[r, c] = '~';
+                        char cell = HiddenBoardPlayer[r, c] = '~';
                         Console.Write(" " + cell + " ");
                         if (c < size - 1) Console.Write("║");
                     }
@@ -144,6 +150,23 @@ namespace BattleShip
             {
                 for (int i = 0; i < length; i++)
                     Hidden_PlayerBoard[row + i, col] = 'S';
+            }
+        }
+        public char ShootAt(int row, int col)
+        {
+            if (Hidden_BotBoard[row, col] == 'S')
+            {
+                Display_BotBoard[row, col] = 'O'; // mark hit
+                return 'O';
+            }
+            else if (Hidden_BotBoard[row, col] == '~')
+            {
+                Display_BotBoard[row, col] = 'X'; // mark miss
+                return 'X';
+            }
+            else
+            {
+                return Hidden_BotBoard[row, col]; // already shot
             }
         }
     }

@@ -20,7 +20,6 @@ namespace BattleShip
             Display_PlayerBoard = new char[Size, Size];
 
             for (int r = 0; r < Size; r++)
-            {
                 for (int c = 0; c < Size; c++)
                 {
                     Hidden_PlayerBoard[r, c] = '~';
@@ -28,7 +27,6 @@ namespace BattleShip
                     Display_BotBoard[r, c] = '~';
                     Display_PlayerBoard[r, c] = '~';
                 }
-            }
         }
 
         //==========================================================================================================================

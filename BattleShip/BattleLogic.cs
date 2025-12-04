@@ -72,6 +72,21 @@ namespace BattleShip
                     continue;
                 }
             }
+
+        }
+
+        private void BotTurn(Board playerBoard)
+        {
+            var (row, col, result) = Bot.MakeMove();
+
+            if (result == 'O')
+            {
+                Console.WriteLine($"BOT hits at {row + 1},{col + 1}");
+            }
+            else
+            {
+                Console.WriteLine($"BOT misses at {row + 1},{col + 1}");
+            }
         }
 
         private bool IsValidInput(string input)
@@ -84,6 +99,32 @@ namespace BattleShip
             if (r < 1 || r > 10) return false;
 
             return true;
+        }
+
+        public int _lastHitRow = -1;
+        public int _lastHitCol = -1;
+        public bool _isHunting = true;
+
+        public void ProcessShotResult(int row, int col, char result, bool shipSunk)
+        {
+
+            Board.Display_BotBoard[row, col] = result;
+
+            if (result == 'X')
+            {
+                if (shipSunk)
+                {
+                    _isHunting = true;
+                    _lastHitRow = -1;
+                    _lastHitCol = -1;
+                }
+                else
+                {
+                    _isHunting = false;
+                    _lastHitRow = row;
+                    _lastHitCol = col;
+                }
+            }
         }
 
         public int _lastHitRow = -1;
@@ -146,7 +187,7 @@ namespace BattleShip
                 {
                     Board.Display_BotBoard[row, col] = 'M';
                     Console.WriteLine("MISS!");
-                    Bot.ProcessShotResult(row, col, 'M', false);
+                    ProcessShotResult(row, col, 'M', false);
                 }
                 else
                 {

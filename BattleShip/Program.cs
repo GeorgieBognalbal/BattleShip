@@ -10,31 +10,29 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
-            InputSimulator inputSimulator = new InputSimulator();
+            // Initialize input simulator and fullscreen
+            var inputSimulator = new InputSimulator();
             inputSimulator.Keyboard.KeyPress(VirtualKeyCode.F11);
 
             Console.CursorVisible = false;
             Thread.Sleep(500);
 
-            Board playerBoard = new Board();
-            Design design = new Design();
-            PlacementManager pm = new PlacementManager();
-            BattleLogic battleLogic = new BattleLogic();
-            
+            // Create game objects
+            var playerBoard = new Board();
+            var design = new Design();
+            var pm = new PlacementManager();
+            var battleLogic = new BattleLogic();
+            var bot = new Bot();
 
-            // BOT SETUP
-            Bot bot = new Bot();
-            bot.InitializeBoards();
+            // Initialize boards and place bot ships
+            playerBoard.InitializeBoard();
             bot.PlaceShips();
 
-            // Copy real bot ships to the board object
-            for (int r = 0; r < 10; r++)
-                for (int c = 0; c < 10; c++)
-                    playerBoard.Hidden_BotBoard[r, c] = bot.hidden_BotBoard[r, c];
-
+            // Provide bot and player board references to battle logic
             battleLogic.Bot = bot;
-            battleLogic.Board = playerBoard;
+            battleLogic.PlayerBoard = playerBoard;
 
+            // Show main menu
             design.MainMenu();
 
             while (true)
@@ -72,13 +70,13 @@ namespace BattleShip
                         design.header();
                         battleLogic.GameStart(playerBoard);
                     }
-                    else if (key.Key == ConsoleKey.T)
+                    else if (inputStart.Key == ConsoleKey.T)
                     {
                         Console.Clear();
                         design.Tutorial();
                         Console.ReadKey(true);
                     }
-                    else if (key.Key == ConsoleKey.Escape)
+                    else if (inputStart.Key == ConsoleKey.Escape)
                     {
                         Environment.Exit(0);
                     }

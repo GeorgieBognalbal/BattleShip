@@ -9,9 +9,10 @@ namespace BattleShip
         public char[,] Display_BotBoard { get; private set; }
         public char[,] Display_PlayerBoard { get; private set; }
 
+
         public int Size { get; private set; } = 10;
 
-        public Board()
+        public void InitializeBoard()
         {
             Hidden_PlayerBoard = new char[Size, Size];
             Hidden_BotBoard = new char[Size, Size];
@@ -30,7 +31,8 @@ namespace BattleShip
             }
         }
 
-        //=================== Player Board Draw (Show / Hide Ships) ===================
+        //==========================================================================================================================
+        //==========================================PLACEMENT STAGE BOARD===========================================================
         public void Draw(bool showShips)
         {
             Console.WriteLine(@"     
@@ -68,8 +70,9 @@ namespace BattleShip
             for (int r = 0; r < 10; r++)
                 for (int c = 0; c < 10; c++)
                     Hidden_PlayerBoard[r, c] = botBoard[r, c];
-        }
 
+            Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+        }
         //============================ Side by Side Display ==========================
         public static class BoardDisplay
         {
@@ -116,6 +119,7 @@ namespace BattleShip
                 Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝         ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
             }
         }
+
 
         //============================ Placement Support =============================
         public bool CanPlaceShip(int row, int col, int length, Orientation orientation)

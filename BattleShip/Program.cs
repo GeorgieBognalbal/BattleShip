@@ -10,7 +10,7 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
-            // Initialize input simulator and fullscreen
+            
             var inputSimulator = new InputSimulator();
             inputSimulator.Keyboard.KeyPress(VirtualKeyCode.F11);
 

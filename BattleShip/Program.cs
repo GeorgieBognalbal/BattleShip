@@ -69,10 +69,8 @@ namespace BattleShip
                     if (inputStart.Key == ConsoleKey.Enter)
                     {
                         Console.Clear();
-
                         design.header();
                         battleLogic.GameStart(playerBoard);
-
                     }
                     else if (key.Key == ConsoleKey.T)
                     {

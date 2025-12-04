@@ -36,8 +36,6 @@ namespace BattleShip
 
         public void PlaceShips()
         {
-            foreach (int size in ShipSizes)
-            {
                 bool placed = false;
                 while (!placed)
                 {

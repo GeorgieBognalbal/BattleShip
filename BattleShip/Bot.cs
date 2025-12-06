@@ -1,261 +1,261 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-    namespace BattleShip
+namespace BattleShip
+{
+    public class Bot
     {
-        public class Bot
+        public Board Board;
+
+        private readonly Random _random = new Random();
+        private readonly bool[,] shotsFired = new bool[10, 10];
+
+        public bool _isHunting = true;
+        public int _lastHitRow = -1;
+        public int _lastHitCol = -1;
+
+        // Reference to the bot's board (ships placed)
+        public char[,] Hidden_BotBoard { get; private set; } = new char[10, 10];
+
+        // Place ships onto the bot's hidden board.
+        // The Board parameter is optional for linking the Bot to a Board instance.
+        public void PlaceShips(Board board = null)
         {
-            public Board Board;
-
-            private readonly Random _random = new Random();
-            private readonly bool[,] shotsFired = new bool[10, 10];
-
-            public bool _isHunting = true;
-            public int _lastHitRow = -1;
-            public int _lastHitCol = -1;
-
-            // Reference to the bot's board (ships placed)
-            public char[,] Hidden_BotBoard { get; private set; } = new char[10, 10];
-
-            // Place ships onto the bot's hidden board.
-            // The Board parameter is optional for linking the Bot to a Board instance.
-            public void PlaceShips(Board board = null)
+            // Associate passed board if provided
+            if (board != null)
             {
-                // Associate passed board if provided
-                if (board != null)
+                this.Board = board;
+            }
+
+            int gridSize = Hidden_BotBoard.GetLength(0);
+
+            // Initialize board to '.' for empty
+            for (int r = 0; r < gridSize; r++)
+            {
+                for (int c = 0; c < gridSize; c++)
                 {
-                    this.Board = board;
+                    Hidden_BotBoard[r, c] = '.';
                 }
+            }
 
-                int gridSize = Hidden_BotBoard.GetLength(0);
+            // Ship sizes (Destroyer=2, Submarine=3, Cruiser=3, Battleship=4, Carrier=5)
+            var shipSizes = new List<int> { 2, 3, 3, 4, 5 };
 
-                // Initialize board to '.' for empty
-                for (int r = 0; r < gridSize; r++)
+            foreach (int shipSize in shipSizes)
+            {
+                bool placed = false;
+                int attempts = 0;
+                while (!placed && attempts < 1000)
                 {
-                    for (int c = 0; c < gridSize; c++)
+                    attempts++;
+                    int r = _random.Next(0, gridSize);
+                    int c = _random.Next(0, gridSize);
+                    Orientation orientation = (Orientation)_random.Next(0, 2); // 0 or 1
+
+                    if (CanPlaceShip(Hidden_BotBoard, shipSize, r, c, orientation))
                     {
-                        Hidden_BotBoard[r, c] = '.';
-                    }
-                }
-
-                // Ship sizes (Destroyer=2, Submarine=3, Cruiser=3, Battleship=4, Carrier=5)
-                var shipSizes = new List<int> { 2, 3, 3, 4, 5 };
-
-                foreach (int shipSize in shipSizes)
-                {
-                    bool placed = false;
-                    int attempts = 0;
-                    while (!placed && attempts < 1000)
-                    {
-                        attempts++;
-                        int r = _random.Next(0, gridSize);
-                        int c = _random.Next(0, gridSize);
-                        Orientation orientation = (Orientation)_random.Next(0, 2); // 0 or 1
-
-                        if (CanPlaceShip(Hidden_BotBoard, shipSize, r, c, orientation))
+                        bool isHorizontal = orientation == Orientation.Horizontal;
+                        for (int i = 0; i < shipSize; i++)
                         {
-                            bool isHorizontal = orientation == Orientation.Horizontal;
-                            for (int i = 0; i < shipSize; i++)
-                            {
-                                int currentRow = r + (isHorizontal ? 0 : i);
-                                int currentCol = c + (isHorizontal ? i : 0);
-                                Hidden_BotBoard[currentRow, currentCol] = 'S';
-                            }
-                            placed = true;
+                            int currentRow = r + (isHorizontal ? 0 : i);
+                            int currentCol = c + (isHorizontal ? i : 0);
+                            Hidden_BotBoard[currentRow, currentCol] = 'S';
                         }
+                        placed = true;
                     }
+                }
 
-                    // If we failed to place after many attempts, throw to surface the issue.
-                    if (!placed)
-                    {
-                        throw new InvalidOperationException($"Failed to place ship of size {shipSize} after many attempts.");
-                    }
+                // If we failed to place after many attempts, throw to surface the issue.
+                if (!placed)
+                {
+                    throw new InvalidOperationException($"Failed to place ship of size {shipSize} after many attempts.");
+                }
+            }
+        }
+
+        private bool CanPlaceShip(char[,] board, int shipSize, int row, int col, Orientation orientation)
+        {
+            int gridSize = board.GetLength(0);
+            bool isHorizontal = orientation == Orientation.Horizontal;
+
+            // Check bounds
+            if (isHorizontal)
+            {
+                if (col + shipSize > gridSize) return false;
+            }
+            else
+            {
+                if (row + shipSize > gridSize) return false;
+            }
+
+            // Check overlap
+            for (int i = 0; i < shipSize; i++)
+            {
+                int currentRow = row + (isHorizontal ? 0 : i);
+                int currentCol = col + (isHorizontal ? i : 0);
+
+                if (board[currentRow, currentCol] == 'S')
+                {
+                    return false;
                 }
             }
 
-            private bool CanPlaceShip(char[,] board, int shipSize, int row, int col, Orientation orientation)
+            return true;
+        }
+
+        public (int row, int col) MakeMove(Board playerBoard)
+        {
+            // Optionally use playerBoard for more advanced heuristics; not used here.
+            (int row, int col) shot;
+
+            if (_isHunting)
             {
-                int gridSize = board.GetLength(0);
-                bool isHorizontal = orientation == Orientation.Horizontal;
-
-                // Check bounds
-                if (isHorizontal)
-                {
-                    if (col + shipSize > gridSize) return false;
-                }
-                else
-                {
-                    if (row + shipSize > gridSize) return false;
-                }
-
-                // Check overlap
-                for (int i = 0; i < shipSize; i++)
-                {
-                    int currentRow = row + (isHorizontal ? 0 : i);
-                    int currentCol = col + (isHorizontal ? i : 0);
-
-                    if (board[currentRow, currentCol] == 'S')
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                shot = GetRandomValidShot();
             }
-
-            public (int row, int col) MakeMove(Board playerBoard)
+            else
             {
-                // Optionally use playerBoard for more advanced heuristics; not used here.
-                (int row, int col) shot;
+                shot = GetTargetShot();
 
-                if (_isHunting)
+                if (shot.row == -1)
                 {
+                    _isHunting = true;
                     shot = GetRandomValidShot();
                 }
+            }
+
+            // Mark shot as fired to avoid repeats
+            if (shot.row >= 0 && shot.col >= 0 && shot.row < shotsFired.GetLength(0) && shot.col < shotsFired.GetLength(1))
+            {
+                shotsFired[shot.row, shot.col] = true;
+            }
+
+            return shot;
+        }
+
+        private (int, int) GetRandomValidShot()
+        {
+            int gridSize = shotsFired.GetLength(0);
+            // Try random picks first
+            for (int attempt = 0; attempt < 200; attempt++)
+            {
+                int row = _random.Next(gridSize);
+                int col = _random.Next(gridSize);
+
+                if (!shotsFired[row, col] && IsUnknownOnDisplay(row, col))
+                {
+                    return (row, col);
+                }
+            }
+
+            // Fallback: scan board for first unknown cell
+            for (int r = 0; r < gridSize; r++)
+            {
+                for (int c = 0; c < gridSize; c++)
+                {
+                    if (!shotsFired[r, c] && IsUnknownOnDisplay(r, c))
+                    {
+                        return (r, c);
+                    }
+                }
+            }
+
+            // No valid shot found
+            return (-1, -1);
+        }
+
+        private (int, int) GetTargetShot()
+        {
+            if (_lastHitRow < 0 || _lastHitCol < 0) return (-1, -1);
+
+            (int dr, int dc)[] directions = { (-1, 0), (1, 0), (0, -1), (0, 1) };
+
+            int gridSize = shotsFired.GetLength(0);
+
+            foreach (var (dr, dc) in directions)
+            {
+                int r = _lastHitRow + dr;
+                int c = _lastHitCol + dc;
+
+                if (r >= 0 && r < gridSize && c >= 0 && c < gridSize)
+                {
+                    if (!shotsFired[r, c] && IsUnknownOnDisplay(r, c))
+                    {
+                        return (r, c);
+                    }
+                }
+            }
+            return (-1, -1);
+        }
+
+        private bool IsUnknownOnDisplay(int row, int col)
+        {
+            // If Board is assigned and has a Display_BotBoard we respect it.
+            // Otherwise treat all non-fired cells as unknown.
+            if (this.Board != null)
+            {
+                try
+                {
+                    var display = this.Board.Display_BotBoard;
+                    if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
+                    {
+                        return display[row, col] == '?';
+                    }
+                }
+                catch
+                {
+                    // If Board.Display_BotBoard is not available or throws, fallback to unknown.
+                }
+            }
+
+            // Fallback: if we don't know the display, check shotsFired to determine unknown.
+            return !shotsFired[row, col];
+        }
+
+        public void ProcessShotResult(int row, int col, char result, bool shipSunk)
+        {
+            // Update display board if possible
+            if (this.Board != null)
+            {
+                try
+                {
+                    var display = this.Board.Display_BotBoard;
+                    if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
+                    {
+                        display[row, col] = result;
+                    }
+                }
+                catch
+                {
+                    // ignore update failures to avoid throwing from bot logic
+                }
+            }
+
+            // Mark shot as fired locally as well
+            if (row >= 0 && row < shotsFired.GetLength(0) && col >= 0 && col < shotsFired.GetLength(1))
+            {
+                shotsFired[row, col] = true;
+            }
+
+            if (result == 'O')
+            {
+                if (shipSunk)
+                {
+                    _isHunting = true;
+                    _lastHitRow = -1;
+                    _lastHitCol = -1;
+                }
                 else
                 {
-                    shot = GetTargetShot();
-
-                    if (shot.row == -1)
-                    {
-                        _isHunting = true;
-                        shot = GetRandomValidShot();
-                    }
-                }
-
-                // Mark shot as fired to avoid repeats
-                if (shot.row >= 0 && shot.col >= 0 && shot.row < shotsFired.GetLength(0) && shot.col < shotsFired.GetLength(1))
-                {
-                    shotsFired[shot.row, shot.col] = true;
-                }
-
-                return shot;
-            }
-
-            private (int, int) GetRandomValidShot()
-            {
-                int gridSize = shotsFired.GetLength(0);
-                // Try random picks first
-                for (int attempt = 0; attempt < 200; attempt++)
-                {
-                    int row = _random.Next(gridSize);
-                    int col = _random.Next(gridSize);
-
-                    if (!shotsFired[row, col] && IsUnknownOnDisplay(row, col))
-                    {
-                        return (row, col);
-                    }
-                }
-
-                // Fallback: scan board for first unknown cell
-                for (int r = 0; r < gridSize; r++)
-                {
-                    for (int c = 0; c < gridSize; c++)
-                    {
-                        if (!shotsFired[r, c] && IsUnknownOnDisplay(r, c))
-                        {
-                            return (r, c);
-                        }
-                    }
-                }
-
-                // No valid shot found
-                return (-1, -1);
-            }
-
-            private (int, int) GetTargetShot()
-            {
-                if (_lastHitRow < 0 || _lastHitCol < 0) return (-1, -1);
-
-                (int dr, int dc)[] directions = { (-1, 0), (1, 0), (0, -1), (0, 1) };
-
-                int gridSize = shotsFired.GetLength(0);
-
-                foreach (var (dr, dc) in directions)
-                {
-                    int r = _lastHitRow + dr;
-                    int c = _lastHitCol + dc;
-
-                    if (r >= 0 && r < gridSize && c >= 0 && c < gridSize)
-                    {
-                        if (!shotsFired[r, c] && IsUnknownOnDisplay(r, c))
-                        {
-                            return (r, c);
-                        }
-                    }
-                }
-                return (-1, -1);
-            }
-
-            private bool IsUnknownOnDisplay(int row, int col)
-            {
-                // If Board is assigned and has a Display_BotBoard we respect it.
-                // Otherwise treat all non-fired cells as unknown.
-                if (this.Board != null)
-                {
-                    try
-                    {
-                        var display = this.Board.Display_BotBoard;
-                        if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
-                        {
-                            return display[row, col] == '?';
-                        }
-                    }
-                    catch
-                    {
-                        // If Board.Display_BotBoard is not available or throws, fallback to unknown.
-                    }
-                }
-
-                // Fallback: if we don't know the display, check shotsFired to determine unknown.
-                return !shotsFired[row, col];
-            }
-
-            public void ProcessShotResult(int row, int col, char result, bool shipSunk)
-            {
-                // Update display board if possible
-                if (this.Board != null)
-                {
-                    try
-                    {
-                        var display = this.Board.Display_BotBoard;
-                        if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
-                        {
-                            display[row, col] = result;
-                        }
-                    }
-                    catch
-                    {
-                        // ignore update failures to avoid throwing from bot logic
-                    }
-                }
-
-                // Mark shot as fired locally as well
-                if (row >= 0 && row < shotsFired.GetLength(0) && col >= 0 && col < shotsFired.GetLength(1))
-                {
-                    shotsFired[row, col] = true;
-                }
-
-                if (result == 'H')
-                {
-                    if (shipSunk)
-                    {
-                        _isHunting = true;
-                        _lastHitRow = -1;
-                        _lastHitCol = -1;
-                    }
-                    else
-                    {
-                        _isHunting = false;
-                        _lastHitRow = row;
-                        _lastHitCol = col;
-                    }
+                    _isHunting = false;
+                    _lastHitRow = row;
+                    _lastHitCol = col;
                 }
             }
         }
     }
+}

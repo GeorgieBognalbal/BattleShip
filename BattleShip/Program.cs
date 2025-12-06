@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using WindowsInput;
 using WindowsInput.Native;
@@ -11,7 +10,7 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
-            
+            // Initialize input simulator and fullscreen
             var inputSimulator = new InputSimulator();
             inputSimulator.Keyboard.KeyPress(VirtualKeyCode.F11);
 
@@ -29,7 +28,9 @@ namespace BattleShip
             playerBoard.InitializeBoard();
             bot.PlaceShips();
 
-            battleLogic.Bot = bot;
+            // Provide bot and player board references to battle logic
+            Bot Bot = bot;
+            Board Display_PlayerBoard = playerBoard;
 
             // Show main menu
             design.MainMenu();
@@ -51,14 +52,14 @@ namespace BattleShip
                         new Ship("Carrier", 5, Orientation.Horizontal)
                     };
 
-                    pm.PlaceAllShips(Board, ships);
+                    pm.PlaceAllShips(playerBoard, ships);
 
                     Console.Clear();
                     Console.WriteLine("Ship placement finished! Press any key...");
                     Console.ReadKey(true);
 
                     Console.Clear();
-                    Board.Draw(true);
+                    playerBoard.Draw(true);
 
                     Console.WriteLine("Press ENTER to start the match...");
                     var inputStart = Console.ReadKey(true);

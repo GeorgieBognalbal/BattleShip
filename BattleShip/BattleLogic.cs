@@ -6,10 +6,9 @@ namespace BattleShip
     {
         public Bot Bot;
         public Board Board;
-        public Board PlayerBoard;
 
-        private int playerShips = 5;
-        private int botShips = 5;
+        public int playerShips = 5;
+        public int botShips = 5;
 
         private void SyncBotDisplay()
         {
@@ -17,16 +16,15 @@ namespace BattleShip
             Board.SyncBotBoard(Board.Display_BotBoard);
         }
 
+        //=====================================GAME START===========================================
         public void GameStart(Board board)
         {
             Design design = new Design();
 
             // Set the active board reference(s)
             Board = board;
-            PlayerBoard = board;
 
             Console.Clear();
-
             design.header();
             Board.BoardDisplay.ShowSideBySide(board);
 
@@ -52,11 +50,12 @@ namespace BattleShip
                 if (IsShipSunk(Board.Hidden_BotBoard))
                 {
                     Console.Clear();
-                    Console.WriteLine("\nYOU WIN!");
+                    Console.WriteLine("\nPLAYER WIN!");
                     return;
                 }
 
                 BotTurn();
+                Board.BoardDisplay.ShowSideBySide(Board);
 
                 // Check win condition for player
                 if (IsShipSunk(Board.Hidden_PlayerBoard))
@@ -68,24 +67,10 @@ namespace BattleShip
                 else
                 {
                     Console.Clear();
+                    GameStart(board);
                     Board.BoardDisplay.ShowSideBySide(board);
                     continue;
                 }
-            }
-
-        }
-
-        private void BotTurn(Board playerBoard)
-        {
-            var (row, col, result) = Bot.MakeMove();
-
-            if (result == 'O')
-            {
-                Console.WriteLine($"BOT hits at {row + 1},{col + 1}");
-            }
-            else
-            {
-                Console.WriteLine($"BOT misses at {row + 1},{col + 1}");
             }
         }
 
@@ -99,32 +84,6 @@ namespace BattleShip
             if (r < 1 || r > 10) return false;
 
             return true;
-        }
-
-        public int _lastHitRow = -1;
-        public int _lastHitCol = -1;
-        public bool _isHunting = true;
-
-        public void ProcessShotResult(int row, int col, char result, bool shipSunk)
-        {
-
-            Board.Display_BotBoard[row, col] = result;
-
-            if (result == 'X')
-            {
-                if (shipSunk)
-                {
-                    _isHunting = true;
-                    _lastHitRow = -1;
-                    _lastHitCol = -1;
-                }
-                else
-                {
-                    _isHunting = false;
-                    _lastHitRow = row;
-                    _lastHitCol = col;
-                }
-            }
         }
 
         public int _lastHitRow = -1;
@@ -167,7 +126,7 @@ namespace BattleShip
             if (Board.Hidden_BotBoard[row, col] == 'S')
             {
                 Board.Hidden_BotBoard[row, col] = 'X';      // mark hidden as hit
-                Board.Display_BotBoard[row, col] = 'H';     // mark display as hit
+                Board.Display_BotBoard[row, col] = 'X';     // mark display as hit
                 Console.WriteLine("HIT!");
 
                 bool sunk = IsShipSunk(Board.Hidden_BotBoard);
@@ -178,16 +137,16 @@ namespace BattleShip
                 }
 
                 // let the Bot AI know result (H = hit)
-                Bot.ProcessShotResult(row, col, 'H', sunk);
+                Bot.ProcessShotResult(row, col, 'O', sunk);
             }
             else
             {
                 // Miss case: if not already revealed
                 if (Board.Display_BotBoard[row, col] == '~')
                 {
-                    Board.Display_BotBoard[row, col] = 'M';
+                    Board.Display_BotBoard[row, col] = 'X';
                     Console.WriteLine("MISS!");
-                    ProcessShotResult(row, col, 'M', false);
+                    Bot.ProcessShotResult(row, col, 'X', false);
                 }
                 else
                 {
@@ -202,7 +161,7 @@ namespace BattleShip
         public void BotTurn()
         {
             // Bot needs the player's board to decide; Bot.MakeMove(Board) returns (int row, int col)
-            (int r, int c) = Bot.MakeMove(PlayerBoard);
+            (int r, int c) = Bot.MakeMove(Board);
 
             // bounds check
             if (r < 0 || r >= Board.Size || c < 0 || c >= Board.Size)
@@ -211,18 +170,18 @@ namespace BattleShip
             // If bot hits player's ship
             if (Board.Hidden_PlayerBoard[r, c] == 'S')
             {
-                Board.Hidden_PlayerBoard[r, c] = 'X';
-                Board.Display_PlayerBoard[r, c] = 'H';
+                Board.Hidden_PlayerBoard[r, c] = 'O';
+                Board.Display_PlayerBoard[r, c] = 'O';
 
                 bool sunk = IsShipSunk(Board.Hidden_PlayerBoard);
                 if (sunk)
                 {
                     playerShips = 0; // all player ships sunk
-                    Bot.ProcessShotResult(r, c, 'H', true);
+                    Bot.ProcessShotResult(r, c, 'O', true);
                 }
                 else
                 {
-                    Bot.ProcessShotResult(r, c, 'H', false);
+                    Bot.ProcessShotResult(r, c, 'O', false);
                 }
 
                 Console.WriteLine($"BOT hits at {r + 1},{c + 1}");
@@ -232,10 +191,10 @@ namespace BattleShip
                 // miss - mark player's display
                 if (Board.Display_PlayerBoard[r, c] == '~')
                 {
-                    Board.Display_PlayerBoard[r, c] = 'M';
+                    Board.Display_PlayerBoard[r, c] = 'X';
                 }
 
-                Bot.ProcessShotResult(r, c, 'M', false);
+                Bot.ProcessShotResult(r, c, 'X', false);
                 Console.WriteLine($"BOT misses at {r + 1},{c + 1}");
             }
         }

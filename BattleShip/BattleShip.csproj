@@ -50,6 +50,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="Design.cs" />
+    <Compile Include="GameFlow.cs" />
     <Compile Include="Placement.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Program.cs" />
@@ -57,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="Properties\packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

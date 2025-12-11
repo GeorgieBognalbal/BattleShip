@@ -1,100 +1,61 @@
-﻿using System;
+﻿using BattleShip;
+using System;
+using System.Threading;
 
-namespace BattleShip
+namespace BattleShip_v2
 {
     public class BattleLogic
     {
-        public Bot Bot;
-        public Board Board;
+        // Single authoritative references to the Board and Bot instances
+        public Bot Bot { get; private set; }
+        public Board Board { get; private set; }
+        public int PlayerShips { get; private set; } = 5;
+        public int BotShips { get; private set; } = 5;
 
-        public int playerShips = 5;
-        public int botShips = 5;
+        // Hunting state for an AI that needs it (kept for potential Bot/AI usage)
+        private int _lastHitRow = -1;
+        private int _lastHitCol = -1;
+        private bool _isHunting = true;
 
-        private void SyncBotDisplay()
+        // Constructor — pass the actual instances created during setup
+        public BattleLogic(Board board, Bot bot, int playerShips = 5, int botShips = 5)
         {
-            // synchronize using the board's Display_BotBoard array
-            Board.SyncBotBoard(Board.Display_BotBoard);
+            Board = board ?? throw new ArgumentNullException(nameof(board));
+            Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+            PlayerShips = playerShips;
+            BotShips = botShips;
         }
 
-        //=====================================GAME START===========================================
-        public void GameStart(Board board)
-        {
-            Design design = new Design();
+        // Sync the bot display board with whatever representation Board has
+        // NOTE: Do NOT re-initialize the board here; initialization should happen once during game setup.
 
-            // Set the active board reference(s)
-            Board = board;
-
-            Console.Clear();
-            design.header();
-            Board.BoardDisplay.ShowSideBySide(board);
-
-            while (true)
-            {
-                Console.WriteLine("\nEnter attack coordinate (ex: B5): ");
-
-                string input = Console.ReadLine()?.ToUpper() ?? string.Empty;
-
-                if (!IsValidInput(input))
-                {
-                    Console.WriteLine("Invalid input!");
-                    Console.Clear();
-                    continue;
-                }
-
-                int col = input[0] - 'A';
-                int row = int.Parse(input.Substring(1)) - 1;
-
-                PlayerTurn(row, col);
-
-                // Check win condition for bot
-                if (IsShipSunk(Board.Hidden_BotBoard))
-                {
-                    Console.Clear();
-                    Console.WriteLine("\nPLAYER WIN!");
-                    return;
-                }
-
-                BotTurn();
-                Board.BoardDisplay.ShowSideBySide(Board);
-
-                // Check win condition for player
-                if (IsShipSunk(Board.Hidden_PlayerBoard))
-                {
-                    Console.Clear();
-                    Console.WriteLine("\nBOT WINS!");
-                    return;
-                }
-                else
-                {
-                    Console.Clear();
-                    GameStart(board);
-                    Board.BoardDisplay.ShowSideBySide(board);
-                    continue;
-                }
-            }
-        }
-
-        private bool IsValidInput(string input)
+        // Simple input validator (A1..J10)
+        public bool IsValidInput(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return false;
-            if (input.Length < 2) return false;
-            if (input[0] < 'A' || input[0] > 'J') return false;
+            input = input.Trim().ToUpperInvariant();
 
-            if (!int.TryParse(input.Substring(1), out int r)) return false;
-            if (r < 1 || r > 10) return false;
+            if (input.Length < 2 || input.Length > 3) return false; // allow 1-10 -> length 2 or 3
+
+            char col = input[0];
+            if (col < 'A' || col > 'J') return false;
+
+            if (!int.TryParse(input.Substring(1), out int row)) return false;
+            if (row < 1 || row > 10) return false;
 
             return true;
         }
 
-        public int _lastHitRow = -1;
-        public int _lastHitCol = -1;
-        public bool _isHunting = true;
-
+        // Update internal record of bot's display board and relay to Bot AI if needed
         public void ProcessShotResult(int row, int col, char result, bool shipSunk)
         {
-            // update bot display board with the result (H = hit, M = miss)
+            // Defensive bounds
+            if (!InBounds(row, col)) return;
+
+            // result should be 'H' (hit) or 'M' (miss)
             Board.Display_BotBoard[row, col] = result;
 
+            // Keep a basic hunting state if Bot needs it
             if (result == 'H')
             {
                 if (shipSunk)
@@ -110,101 +71,115 @@ namespace BattleShip
                     _lastHitCol = col;
                 }
             }
+
+            // If Bot has a method to learn from results, pass it along
+            Bot?.ProcessShotResult(row, col, result, shipSunk);
         }
 
-        //========================= PLAYER TURN =========================
-        private void PlayerTurn(int row, int col)
+        // PLAYER TURN: player shoots at (row, col) — zero-based indices expected
+        public bool PlayerTurn(int row, int col)
         {
-            // bounds check
-            if (row < 0 || row >= Board.Size || col < 0 || col >= Board.Size)
+            if (!InBounds(row, col))
             {
                 Console.WriteLine("Coordinate out of bounds.");
-                return;
+                Thread.Sleep(500);
+                return false;
             }
 
-            // If there's a ship in the bot's hidden board -> hit
+            // Already fired?
+            if (Board.Display_BotBoard[row, col] != '~')
+            {
+                Console.WriteLine("You already fired at this coordinate.");
+                Thread.Sleep(500);
+                return false;
+            }
+
+            // Hit
             if (Board.Hidden_BotBoard[row, col] == 'S')
             {
-                Board.Hidden_BotBoard[row, col] = 'X';      // mark hidden as hit
-                Board.Display_BotBoard[row, col] = 'X';     // mark display as hit
+                Board.Hidden_BotBoard[row, col] = 'H';
+                Board.Display_BotBoard[row, col] = 'H';
                 Console.WriteLine("HIT!");
+                Thread.Sleep(500);
 
-                bool sunk = IsShipSunk(Board.Hidden_BotBoard);
-                if (sunk)
+                bool allSunk = IsShipSunk(Board.Hidden_BotBoard);
+                if (allSunk)
                 {
-                    botShips = 0; // all bot ships sunk
+                    BotShips = 0;
                     Console.WriteLine("You sunk all bot ships!");
                 }
 
-                // let the Bot AI know result (H = hit)
-                Bot.ProcessShotResult(row, col, 'O', sunk);
-            }
-            else
-            {
-                // Miss case: if not already revealed
-                if (Board.Display_BotBoard[row, col] == '~')
-                {
-                    Board.Display_BotBoard[row, col] = 'X';
-                    Console.WriteLine("MISS!");
-                    Bot.ProcessShotResult(row, col, 'X', false);
-                }
-                else
-                {
-                    Console.WriteLine("You already fired at this coordinate.");
-                }
+                Bot?.ProcessShotResult(row, col, 'H', allSunk);
+                return true;
             }
 
-            SyncBotDisplay();
+            // Miss
+            Board.Display_BotBoard[row, col] = 'M';
+            Console.WriteLine("MISS!");
+            Thread.Sleep(500);
+            Bot?.ProcessShotResult(row, col, 'M', false);
+            return true;
         }
 
-        //========================= BOT TURN =============================
+        // BOT TURN: Bot picks coordinates and acts on player's board
         public void BotTurn()
         {
-            // Bot needs the player's board to decide; Bot.MakeMove(Board) returns (int row, int col)
-            (int r, int c) = Bot.MakeMove(Board);
+            // Ask Bot to make a move using the player's board as context.
+            // IMPORTANT: Make sure Bot.MakeMove expects a Board instance and returns a tuple (int row, int col).
+            var move = Bot.MakeMove(Board);
+            int r = move.Item1;
+            int c = move.Item2;
 
-            // bounds check
-            if (r < 0 || r >= Board.Size || c < 0 || c >= Board.Size)
-                return;
+            if (!InBounds(r, c)) return;
 
-            // If bot hits player's ship
             if (Board.Hidden_PlayerBoard[r, c] == 'S')
             {
-                Board.Hidden_PlayerBoard[r, c] = 'O';
-                Board.Display_PlayerBoard[r, c] = 'O';
+                Board.Hidden_PlayerBoard[r, c] = 'H';
+                Board.Display_PlayerBoard[r, c] = 'H';
 
-                bool sunk = IsShipSunk(Board.Hidden_PlayerBoard);
-                if (sunk)
+                bool allSunk = IsShipSunk(Board.Hidden_PlayerBoard);
+                if (allSunk)
                 {
-                    playerShips = 0; // all player ships sunk
-                    Bot.ProcessShotResult(r, c, 'O', true);
-                }
-                else
-                {
-                    Bot.ProcessShotResult(r, c, 'O', false);
+                    PlayerShips = 0;
+                    Console.WriteLine("BOT sunk all your ships!");
+                    Thread.Sleep(500);
                 }
 
+                // Bot should be notified of a hit
+                Bot?.ProcessShotResult(r, c, 'H', allSunk);
                 Console.WriteLine($"BOT hits at {r + 1},{c + 1}");
+                Thread.Sleep(500);
             }
             else
             {
-                // miss - mark player's display
+                // Miss - mark player's display if not already marked
                 if (Board.Display_PlayerBoard[r, c] == '~')
                 {
-                    Board.Display_PlayerBoard[r, c] = 'X';
+                    Board.Display_PlayerBoard[r, c] = 'M';
                 }
 
-                Bot.ProcessShotResult(r, c, 'X', false);
+                Bot?.ProcessShotResult(r, c, 'M', false);
                 Console.WriteLine($"BOT misses at {r + 1},{c + 1}");
+                Thread.Sleep(500);
             }
         }
 
-        private bool IsShipSunk(char[,] grid)
+        // Returns true when there are no 'S' left anywhere on that hidden grid
+        public bool IsShipSunk(char[,] grid)
         {
+            if (grid == null) return true; // defensively treat null as "no ships"
             foreach (char ch in grid)
-                if (ch == 'S')
-                    return false;
+            {
+                if (ch == 'S') return false;
+            }
             return true;
+        }
+
+        private bool InBounds(int row, int col)
+        {
+            if (Board == null) return false;
+            int size = Board.Size;
+            return row >= 0 && row < size && col >= 0 && col < size;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BattleShip_v2;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using WindowsInput;
@@ -10,27 +11,26 @@ namespace BattleShip
     {
         static void Main(string[] args)
         {
-            // Initialize input simulator and fullscreen
+            // Fullscreen
             var inputSimulator = new InputSimulator();
             inputSimulator.Keyboard.KeyPress(VirtualKeyCode.F11);
 
             Console.CursorVisible = false;
             Thread.Sleep(500);
 
-            // Create game objects
-            var playerBoard = new Board();
+            // Create core game objects ONCE
+            var board = new Board();
+            board.InitializeBoard();
+
             var design = new Design();
-            var pm = new PlacementManager();
-            var battleLogic = new BattleLogic();
+
+            var placement = new Placement(board);
+            var pm = new Placement.PlacementManager(placement, design);
+
             var bot = new Bot();
+            var battleLogic = new BattleLogic(board, bot);
 
-            // Initialize boards and place bot ships
-            playerBoard.InitializeBoard();
-            bot.PlaceShips();
-
-            // Provide bot and player board references to battle logic
-            Bot Bot = bot;
-            Board Display_PlayerBoard = playerBoard;
+            var gameFlow = new GameFlow(board, design, pm, battleLogic);
 
             // Show main menu
             design.MainMenu();
@@ -43,6 +43,7 @@ namespace BattleShip
                 {
                     Console.Clear();
 
+                    // List of ships to place
                     var ships = new List<Ship>()
                     {
                         new Ship("Destroyer", 2, Orientation.Horizontal),
@@ -52,36 +53,51 @@ namespace BattleShip
                         new Ship("Carrier", 5, Orientation.Horizontal)
                     };
 
-                    pm.PlaceAllShips(playerBoard, ships);
+                    // --- PLAYER SHIP PLACEMENT ---
+                    pm.PlaceAllShips(board, ships);
+
+                    // --- BOT SHIP PLACEMENT ---
+                    bot.PlaceShips(board);
+
+                    // Sync bot's ships to board.Hidden_BotBoard
+                    for (int r = 0; r < 10; r++)
+                    {
+                        for (int c = 0; c < 10; c++)
+                        {
+                            board.Hidden_BotBoard[r, c] = bot.Hidden_BotBoard[r, c];
+                        }
+                    }
+
 
                     Console.Clear();
                     Console.WriteLine("Ship placement finished! Press any key...");
                     Console.ReadKey(true);
 
                     Console.Clear();
-                    playerBoard.Draw(true);
+                    board.Draw(true);
 
-                    Console.WriteLine("Press ENTER to start the match...");
+                    Console.WriteLine("Press ENTER to start the match, T for tutorial, or ESC to exit...");
                     var inputStart = Console.ReadKey(true);
 
                     if (inputStart.Key == ConsoleKey.Enter)
                     {
                         Console.Clear();
                         design.header();
-                        battleLogic.GameStart(playerBoard);
+                        gameFlow.GameStart();
+                        return;   // <<< stops code from falling through to main menu
                     }
                     else if (inputStart.Key == ConsoleKey.T)
                     {
                         Console.Clear();
                         design.Tutorial();
                         Console.ReadKey(true);
+                        Console.Clear();
+                        design.MainMenu();
                     }
                     else if (inputStart.Key == ConsoleKey.Escape)
                     {
                         Environment.Exit(0);
                     }
-
-                    Console.Clear();
                 }
             }
         }

@@ -1,26 +1,25 @@
-﻿using System;
+﻿using BattleShip;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace BattleShip
+namespace BattleShip_v2
 {
     public class Bot
     {
         public Board Board;
 
-        private readonly Random _random = new Random();
-        private readonly bool[,] shotsFired = new bool[10, 10];
+        public readonly Random _random = new Random();
+        public readonly bool[,] shotsFired = new bool[10, 10];
 
         public bool _isHunting = true;
         public int _lastHitRow = -1;
         public int _lastHitCol = -1;
 
         // Reference to the bot's board (ships placed)
-        public char[,] Hidden_BotBoard { get; private set; } = new char[10, 10];
+        public char[,] Hidden_BotBoard = new char[10, 10];
 
         // Place ships onto the bot's hidden board.
         // The Board parameter is optional for linking the Bot to a Board instance.
@@ -78,7 +77,7 @@ namespace BattleShip
             }
         }
 
-        private bool CanPlaceShip(char[,] board, int shipSize, int row, int col, Orientation orientation)
+        public bool CanPlaceShip(char[,] board, int shipSize, int row, int col, Orientation orientation)
         {
             int gridSize = board.GetLength(0);
             bool isHorizontal = orientation == Orientation.Horizontal;
@@ -137,7 +136,7 @@ namespace BattleShip
             return shot;
         }
 
-        private (int, int) GetRandomValidShot()
+        public (int, int) GetRandomValidShot()
         {
             int gridSize = shotsFired.GetLength(0);
             // Try random picks first
@@ -168,7 +167,7 @@ namespace BattleShip
             return (-1, -1);
         }
 
-        private (int, int) GetTargetShot()
+        public (int, int) GetTargetShot()
         {
             if (_lastHitRow < 0 || _lastHitCol < 0) return (-1, -1);
 
@@ -192,7 +191,7 @@ namespace BattleShip
             return (-1, -1);
         }
 
-        private bool IsUnknownOnDisplay(int row, int col)
+        public bool IsUnknownOnDisplay(int row, int col)
         {
             // If Board is assigned and has a Display_BotBoard we respect it.
             // Otherwise treat all non-fired cells as unknown.
@@ -200,10 +199,10 @@ namespace BattleShip
             {
                 try
                 {
-                    var display = this.Board.Display_BotBoard;
+                    var display = this.Board.Display_PlayerBoard;
                     if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
                     {
-                        return display[row, col] == '?';
+                        return display[row, col] == '~';
                     }
                 }
                 catch
@@ -218,30 +217,14 @@ namespace BattleShip
 
         public void ProcessShotResult(int row, int col, char result, bool shipSunk)
         {
-            // Update display board if possible
-            if (this.Board != null)
-            {
-                try
-                {
-                    var display = this.Board.Display_BotBoard;
-                    if (display != null && display.GetLength(0) > row && display.GetLength(1) > col)
-                    {
-                        display[row, col] = result;
-                    }
-                }
-                catch
-                {
-                    // ignore update failures to avoid throwing from bot logic
-                }
-            }
-
-            // Mark shot as fired locally as well
+            // Mark shot as fired locally
             if (row >= 0 && row < shotsFired.GetLength(0) && col >= 0 && col < shotsFired.GetLength(1))
             {
                 shotsFired[row, col] = true;
             }
 
-            if (result == 'O')
+            // Update hunting state if hit
+            if (result == 'H')
             {
                 if (shipSunk)
                 {

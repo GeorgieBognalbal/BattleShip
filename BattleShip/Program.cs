@@ -1,4 +1,4 @@
-﻿using BattleShip_v2;
+﻿using BattleShip;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -33,6 +33,7 @@ namespace BattleShip
             var gameFlow = new GameFlow(board, design, pm, battleLogic);
 
             // Show main menu
+            design.boarder();
             design.MainMenu();
 
             while (true)
@@ -74,6 +75,7 @@ namespace BattleShip
                     Console.ReadKey(true);
 
                     Console.Clear();
+                    design.boarder();
                     board.Draw(true);
 
                     Console.WriteLine("Press ENTER to start the match, T for tutorial, or ESC to exit...");

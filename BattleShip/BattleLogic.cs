@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 
-namespace BattleShip_v2
+namespace BattleShip
 {
     public class BattleLogic
     {

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BattleShip;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleShip_v2
+namespace BattleShip
 {
     public class Board
     {
@@ -37,9 +38,10 @@ namespace BattleShip_v2
         //PLACEMENT STAGE BOARD=======================================================
         public void Draw(bool showShips)
         {
-            Console.WriteLine(@"     
-       A   B   C   D   E   F   G   H   I   J
-     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+            int x = 0, y = 1;
+            Console.SetCursorPosition(x, y);
+            Console.WriteLine("       A   B   C   D   E   F   G   H   I   J  ");
+            Console.WriteLine("     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
 
             for (int i = 0; i < 10; i++)
             {
@@ -110,6 +112,6 @@ namespace BattleShip_v2
             }
         }
 
-
+        
     }
 }

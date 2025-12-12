@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleShip_v2
+namespace BattleShip
 {
     public enum Orientation
     {

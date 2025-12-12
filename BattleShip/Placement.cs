@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BattleShip_v2
+namespace BattleShip
 {
     public class Placement
     {
@@ -103,6 +103,8 @@ namespace BattleShip_v2
                 while (true)
                 {
                     Console.Clear();
+                    Console.SetCursorPosition(0, 0);
+                    _design.boarder();
                     _design.PlacementStage_Header();
                     board.Draw(true);
 

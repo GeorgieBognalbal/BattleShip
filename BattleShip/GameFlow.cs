@@ -1,9 +1,9 @@
 ﻿using BattleShip;
 using System;
 using System.Threading;
-using static BattleShip_v2.Placement;
+using static BattleShip.Placement;
 
-namespace BattleShip_v2
+namespace BattleShip
 {
     public class GameFlow
     {

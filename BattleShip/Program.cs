@@ -35,71 +35,73 @@ namespace BattleShip
             // Show main menu
             design.boarder();
             design.MainMenu();
+            design.MenuOptions();
 
-            while (true)
+            var key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Enter)
             {
-                var key = Console.ReadKey(true);
+                Console.Clear();
 
-                if (key.Key == ConsoleKey.Enter)
+                // List of ships to place
+                var ships = new List<Ship>()
+            {
+                new Ship("Destroyer", 2, Orientation.Horizontal),
+                new Ship("Submarine", 3, Orientation.Horizontal),
+                new Ship("Cruiser", 3, Orientation.Horizontal),
+                new Ship("Battleship", 4, Orientation.Horizontal),
+                new Ship("Carrier", 5, Orientation.Horizontal)
+            };
+
+                // --- PLAYER SHIP PLACEMENT ---
+                for (int i = 0; i < 5; i++)
+                {
+                    inputSimulator.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.OEM_PLUS);
+                }
+                pm.PlaceAllShips(board, ships);
+
+                // --- BOT SHIP PLACEMENT ---
+                bot.PlaceShips(board);
+
+                // Sync bot's ships to board.Hidden_BotBoard
+                for (int r = 0; r < 10; r++)
+                {
+                    for (int c = 0; c < 10; c++)
+                    {
+                        board.Hidden_BotBoard[r, c] = bot.Hidden_BotBoard[r, c];
+                    }
+                }
+
+
+                Console.Clear();
+                Console.WriteLine("Ship placement finished! Press any key...");
+                Console.ReadKey(true);
+
+                Console.Clear();
+                design.boarder();
+                board.Draw(true);
+
+                Console.WriteLine("Press ENTER to start the match, T for tutorial, or ESC to exit...");
+                var inputStart = Console.ReadKey(true);
+
+                if (inputStart.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-
-                    // List of ships to place
-                    var ships = new List<Ship>()
-                    {
-                        new Ship("Destroyer", 2, Orientation.Horizontal),
-                        new Ship("Submarine", 3, Orientation.Horizontal),
-                        new Ship("Cruiser", 3, Orientation.Horizontal),
-                        new Ship("Battleship", 4, Orientation.Horizontal),
-                        new Ship("Carrier", 5, Orientation.Horizontal)
-                    };
-
-                    // --- PLAYER SHIP PLACEMENT ---
-                    pm.PlaceAllShips(board, ships);
-
-                    // --- BOT SHIP PLACEMENT ---
-                    bot.PlaceShips(board);
-
-                    // Sync bot's ships to board.Hidden_BotBoard
-                    for (int r = 0; r < 10; r++)
-                    {
-                        for (int c = 0; c < 10; c++)
-                        {
-                            board.Hidden_BotBoard[r, c] = bot.Hidden_BotBoard[r, c];
-                        }
-                    }
-
-
+                    design.header();
+                    gameFlow.GameStart();
+                    return;   // <<< stops code from falling through to main menu
+                }
+                else if (inputStart.Key == ConsoleKey.T)
+                {
                     Console.Clear();
-                    Console.WriteLine("Ship placement finished! Press any key...");
+                    design.Tutorial();
                     Console.ReadKey(true);
-
                     Console.Clear();
-                    design.boarder();
-                    board.Draw(true);
-
-                    Console.WriteLine("Press ENTER to start the match, T for tutorial, or ESC to exit...");
-                    var inputStart = Console.ReadKey(true);
-
-                    if (inputStart.Key == ConsoleKey.Enter)
-                    {
-                        Console.Clear();
-                        design.header();
-                        gameFlow.GameStart();
-                        return;   // <<< stops code from falling through to main menu
-                    }
-                    else if (inputStart.Key == ConsoleKey.T)
-                    {
-                        Console.Clear();
-                        design.Tutorial();
-                        Console.ReadKey(true);
-                        Console.Clear();
-                        design.MainMenu();
-                    }
-                    else if (inputStart.Key == ConsoleKey.Escape)
-                    {
-                        Environment.Exit(0);
-                    }
+                    design.MainMenu();
+                }
+                else if (inputStart.Key == ConsoleKey.Escape)
+                {
+                    Environment.Exit(0);
                 }
             }
         }

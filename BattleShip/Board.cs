@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WindowsInput;
 
 namespace BattleShip
 {
@@ -38,14 +39,15 @@ namespace BattleShip
         //PLACEMENT STAGE BOARD=======================================================
         public void Draw(bool showShips)
         {
-            int x = 0, y = 1;
+
+            int x = 2, y = 1;
             Console.SetCursorPosition(x, y);
             Console.WriteLine("       A   B   C   D   E   F   G   H   I   J  ");
-            Console.WriteLine("     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+            Console.WriteLine("│     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
 
             for (int i = 0; i < 10; i++)
             {
-                Console.Write((i + 1).ToString().PadLeft(2) + "   ║");
+                Console.Write("│ " + (i + 1).ToString().PadLeft(2) + "  ║");
 
                 for (int j = 0; j < 10; j++)
                 {
@@ -62,10 +64,12 @@ namespace BattleShip
                 Console.WriteLine("║");
 
                 if (i < 9)
-                    Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+                    Console.WriteLine("│     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+                
+
             }
 
-            Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+            Console.WriteLine("│     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
         }
 
         //Side by Side Display =======================================================

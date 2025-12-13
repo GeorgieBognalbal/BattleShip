@@ -52,22 +52,46 @@ namespace BattleShip
                 {@"▒▒▒▒▒▒▒▒▒▒▒   ▒▒▒▒▒▒▒▒    ▒▒▒▒▒     ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒   ▒▒▒▒▒▒▒▒▒  ▒▒▒▒ ▒▒▒▒▒ ▒▒▒▒▒  ▒███▒▒▒  "},
                 {@"                                                                                       ▒███      "},
                 {@"                                                                                       █████     "},
-                {@"                                                                                      ▒▒▒▒▒      "},
-                {@"                                   Press Enter to Start the Game                                 "},
-                {@"                                      Press T for Game Tutorial                                  "},
-                {@"                                         Press Esc to Exit                                       "}
+                {@"                                                                                      ▒▒▒▒▒      "}
+
                 };
 
             int x = 30, y = 13;
 
             foreach (string items in menu)
             {
+                Thread.Sleep(50);
                 Console.SetCursorPosition(x, y);
                 Console.WriteLine(items);
 
                 y++;
             }
         }
+
+        public void MenuOptions()
+        {
+            string[] options =
+            {
+                @"                                   Press Enter to Start the Game                                 ",
+                @"                                      Press T for Game Tutorial                                  ",
+                @"                                         Press Esc to Exit                                       "
+            };
+
+            int x = 30, y = 24;
+
+            foreach (string items in options)
+            {
+                Thread.Sleep(50);
+                Console.SetCursorPosition(x, y);
+                Console.WriteLine(items);
+
+                y++;
+            }
+        }
+
+
+
+            
         public void Tutorial()
         {
             Console.WriteLine(@"
@@ -102,21 +126,14 @@ namespace BattleShip
          ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝
 ");
         }
- 
 
-     public void boarder()
+
+        public void boarder()
         {
             string[,] boarder =
             {
-                                                                         
-       {@"┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
+
+       {@"┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐"},
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
@@ -130,8 +147,15 @@ namespace BattleShip
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
-       {@"│                                                                                                                                                          │"},    
-       {@"│                                                                                                                                                          │"},    
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
+       {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
        {@"│                                                                                                                                                          │"},
@@ -157,10 +181,102 @@ namespace BattleShip
 
             };
 
-        foreach (string item in boarder)
+            foreach (string item in boarder)
+            {
+                Thread.Sleep(5);
+                Console.WriteLine(item);
+            }
+        }
+
+        public void PlacementBoader()
+        {
+            string[,] boarder =
+            {
+
+       {@"┌──────────────────────────────────────────────PLACEMENT STAGE───────────────────────────────────────────────┐"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"│                                                                                                            │"},
+       {@"└────────────────────────────────────────────────────────────────────────────────────────────────────────────┘"}
+
+            };
+
+            foreach (string item in boarder)
             {
                 Console.WriteLine(item);
             }
+        }
+
+            /*
+                DESCRIPTION : 
+                    This class is for the global inventory or storage of ASCII ARTS and ASSETS variable
+            */
+
+            // -- RESET
+            public static string RESET = "\u001b[0m";
+
+            // -- TEXT COLOR
+            public string RED = "\u001b[31m";
+            public string GREEN = "\u001b[32m";
+            public string YELLOW = "\u001b[33m";
+            public string BLUE = "\u001b[34m";
+            public string MAGENTA = "\u001b[35m";
+            public string CYAN = "\u001b[36m";
+            public string WHITE = "\u001b[37m";
+            public string BLACK = "\u001b[30m";
+
+            // -- BACKGROUND COLOR    
+            public string RED_BG = "\u001b[41m";
+            public string GREEN_BG = "\u001b[42m";
+            public string YELLOW_BG = "\u001b[43m";
+            public string BLUE_BG = "\u001b[44m";
+            public string MAGENTA_BG = "\u001b[45m";
+            public string CYAN_BG = "\u001b[46m";
+            public string WHITE_BG = "\u001b[47m";
+            public string BLACK_BG = "\u001b[40m";
+
+        /* COLOR NOTES:
+
+            0 - black
+            1 - red
+            2 - green
+            3 - yellow
+            4 - blue
+            5 - magenta
+            6 - cyan
+            7 - white
+
+        */
+        public string SetColor(string color, string text) 
+        { 
+            return text = color + text + RESET;
         }
     }
 }

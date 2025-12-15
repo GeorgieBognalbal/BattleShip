@@ -7,6 +7,7 @@ namespace BattleShip
 {
     public class Placement
     {
+        Board board = new Board();
         private readonly Board _board;
 
         public Placement(Board board)
@@ -102,21 +103,21 @@ namespace BattleShip
             public void PlaceSingleShip(Board board, Ship ship)
             {
                 Console.CursorVisible = true;
-
                 while (true)
                 {
                     Console.Clear();
+                    Thread.Sleep(10);
                     _design.PlacementBoader();
-                    //_design.PlacementStage_Header();
                     board.Draw(true);
 
-                    Console.WriteLine($"│ ┌───────────────────────────────────────────┐");
-                    Console.WriteLine($"│ │Placing {ship.Name} (length {ship.Length})               │"); 
-                    Console.WriteLine($"│ │Enter Coordinate (A1):                     │");
-                    Console.WriteLine($"│ │Orientation (H/V)    :                     │");
-                    Console.WriteLine($"│ └───────────────────────────────────────────┘");
+                    Console.SetCursorPosition(33, 24);
+                    Console.WriteLine($"Placing {ship.Name} (length {ship.Length})");
+                    Console.SetCursorPosition(33, 25);
+                    Console.WriteLine($"Enter Coordinate (A1): ");
+                    Console.SetCursorPosition(33, 26);
+                    Console.WriteLine($"Orientation (H/V)    : ");
 
-                    Console.SetCursorPosition(26, 25);
+                    Console.SetCursorPosition(56, 25);
                     string input = Console.ReadLine()?.ToUpper() ?? string.Empty;
 
                     if (!IsValidInput(input))
@@ -129,7 +130,7 @@ namespace BattleShip
                     int col = input[0] - 'A';
                     int row = int.Parse(input.Substring(1)) - 1;
 
-                    Console.SetCursorPosition(26, 26);
+                    Console.SetCursorPosition(56, 26);
                     string o = (Console.ReadLine() ?? "").Trim().ToUpper();
                     ship.Direction = (o == "V") ? Orientation.Vertical : Orientation.Horizontal;
 

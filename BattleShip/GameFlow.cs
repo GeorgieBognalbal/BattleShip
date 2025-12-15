@@ -26,7 +26,6 @@ namespace BattleShip
             while (true)
             {
                 Console.Clear();
-                _design.header();
                 Board.BoardDisplay.ShowSideBySide(_board);
 
                 Console.Write("\nEnter attack coordinate (ex: B5): ");

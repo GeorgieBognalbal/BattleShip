@@ -1,6 +1,7 @@
 ﻿using BattleShip;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using WindowsInput;
 using WindowsInput.Native;
@@ -46,12 +47,14 @@ namespace BattleShip
                 // List of ships to place
                 var ships = new List<Ship>()
             {
-                new Ship("Destroyer", 2, Orientation.Horizontal),
+                new Ship("Destroyer", 2, Orientation.Horizontal)/*,
                 new Ship("Submarine", 3, Orientation.Horizontal),
                 new Ship("Cruiser", 3, Orientation.Horizontal),
                 new Ship("Battleship", 4, Orientation.Horizontal),
-                new Ship("Carrier", 5, Orientation.Horizontal)
+                new Ship("Carrier", 5, Orientation.Horizontal)*/
             };
+
+
 
                 // --- PLAYER SHIP PLACEMENT ---
                 for (int i = 0; i < 5; i++)
@@ -72,22 +75,26 @@ namespace BattleShip
                     }
                 }
 
-
                 Console.Clear();
-                Console.WriteLine("Ship placement finished! Press any key...");
-                Console.ReadKey(true);
-
-                Console.Clear();
-                design.boarder();
+                Thread.Sleep(10);
+                design.OverviewBoader();
                 board.Draw(true);
 
-                Console.WriteLine("Press ENTER to start the match, T for tutorial, or ESC to exit...");
                 var inputStart = Console.ReadKey(true);
 
                 if (inputStart.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    design.header();
+                    Console.SetCursorPosition(5, 10);
+                    design.BotPlacing();
+                    Thread.Sleep(3000);
+
+                    Console.Clear();
+
+                    Console.SetCursorPosition(5, 10);
+                    design.GameStart_Header();
+                    Thread.Sleep(2000);
+
                     gameFlow.GameStart();
                     return;   // <<< stops code from falling through to main menu
                 }

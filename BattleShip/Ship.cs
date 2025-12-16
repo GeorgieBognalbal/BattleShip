@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BattleShip
 {
+    // CLASS FOR SHIP OBJECTS
     public enum Orientation
     {
         Horizontal,

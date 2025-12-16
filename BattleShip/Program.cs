@@ -5,6 +5,8 @@ using System.Net;
 using System.Threading;
 using WindowsInput;
 using WindowsInput.Native;
+using System.Media;
+using System.Runtime.CompilerServices;
 
 namespace BattleShip
 {
@@ -33,7 +35,13 @@ namespace BattleShip
 
             var gameFlow = new GameFlow(board, design, pm, battleLogic);
 
-            // Show main menu
+            // Play background music
+            string Music = AppDomain.CurrentDomain.BaseDirectory + @"Assets\the-last-point-beat-electronic-digital-394291.wav";
+            SoundPlayer soundPlayer = new SoundPlayer();
+            soundPlayer.SoundLocation = Music;
+            soundPlayer.PlayLooping();
+
+            //Show main menu
             design.boarder();
             design.MainMenu();
             design.MenuOptions();
@@ -47,11 +55,11 @@ namespace BattleShip
                 // List of ships to place
                 var ships = new List<Ship>()
             {
-                new Ship("Destroyer", 2, Orientation.Horizontal)/*,
+                new Ship("Destroyer", 2, Orientation.Horizontal),
                 new Ship("Submarine", 3, Orientation.Horizontal),
                 new Ship("Cruiser", 3, Orientation.Horizontal),
                 new Ship("Battleship", 4, Orientation.Horizontal),
-                new Ship("Carrier", 5, Orientation.Horizontal)*/
+                new Ship("Carrier", 5, Orientation.Horizontal)
             };
 
 
@@ -75,6 +83,7 @@ namespace BattleShip
                     }
                 }
 
+                Console.CursorVisible = false;
                 Console.Clear();
                 Thread.Sleep(10);
                 design.OverviewBoader();
@@ -84,10 +93,11 @@ namespace BattleShip
 
                 if (inputStart.Key == ConsoleKey.Enter)
                 {
+                    Console.CursorVisible = false;
                     Console.Clear();
-                    Console.SetCursorPosition(5, 10);
+                    Console.SetCursorPosition(4, 10);
                     design.BotPlacing();
-                    Thread.Sleep(3000);
+                    Thread.Sleep(2000);
 
                     Console.Clear();
 
@@ -96,10 +106,12 @@ namespace BattleShip
                     Thread.Sleep(2000);
 
                     gameFlow.GameStart();
-                    return;   // <<< stops code from falling through to main menu
+                    return;   // stops code from falling through to main menu
                 }
                 else if (inputStart.Key == ConsoleKey.T)
                 {
+                    Console.CursorVisible = false;
+
                     Console.Clear();
                     design.Tutorial();
                     Console.ReadKey(true);

@@ -60,5 +60,8 @@
     <None Include="App.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\the-last-point-beat-electronic-digital-394291.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

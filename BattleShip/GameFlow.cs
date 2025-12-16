@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using static BattleShip.Placement;
+using WindowsInput;
 
 namespace BattleShip
 {
@@ -22,18 +23,27 @@ namespace BattleShip
 
         public void GameStart()
         {
+            InputSimulator inputSimulator = new InputSimulator();
+
+            inputSimulator.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.OEM_MINUS);
 
             while (true)
             {
-                Console.Clear();
-                Board.BoardDisplay.ShowSideBySide(_board);
 
-                Console.Write("\nEnter attack coordinate (ex: B5): ");
+                Console.Clear();
+                _design.battleBanner();
+                Board.BoardDisplay.ShowSideBySide(_board);                
+                _design.BattleBoader();
+
+                Console.SetCursorPosition(37, 29);
+                Console.Write("Enter attack coordinate (ex: B5)");
+
+                Console.SetCursorPosition(37, 30);
                 string input = Console.ReadLine()?.Trim().ToUpper() ?? string.Empty;
 
-                // Use BattleLogic's validator (PlacementManager is ONLY for placing)
                 if (!_battleLogic.IsValidInput(input))
                 {
+                    Console.SetCursorPosition(45, 30);
                     Console.WriteLine("Invalid input! Try again.");
                     Thread.Sleep(1000);
                     continue;
@@ -46,6 +56,7 @@ namespace BattleShip
                 bool valid = _battleLogic.PlayerTurn(row, col);
                 if (!valid)
                 {
+                    Console.SetCursorPosition(45, 30);
                     Console.WriteLine("Try again.");
                     Thread.Sleep(1000);
                     continue; // DO NOT let bot fire
@@ -55,8 +66,9 @@ namespace BattleShip
                 if (_battleLogic.BotShips == 0)
                 {
                     Console.Clear();
-                    Board.BoardDisplay.ShowSideBySide(_board);
-                    Console.WriteLine("\nPLAYER WIN!");
+                    Console.SetCursorPosition(0, 10);
+                    _design.playerWon();
+                    Console.ReadKey(true);
                     return;
                 }
 
@@ -71,7 +83,8 @@ namespace BattleShip
                 if (_battleLogic.IsShipSunk(_board.Hidden_PlayerBoard))
                 {
                     Console.Clear();
-                    Console.WriteLine("\nBOT WINS!");
+                    Console.SetCursorPosition(0, 10);
+                    _design.botWon();
                     return;
                 }
             }

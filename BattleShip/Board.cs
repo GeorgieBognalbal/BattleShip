@@ -84,12 +84,12 @@ namespace BattleShip
                 int size = board.Size;
 
                 Console.WriteLine(@"
-       A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J
-     ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗         ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+                A   B   C   D   E   F   G   H   I   J             A   B   C   D   E   F   G   H   I   J
+              ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗         ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
 
                 for (int r = 0; r < size; r++)
                 {
-                    Console.Write((r + 1).ToString().PadLeft(2) + "   ║");
+                    Console.Write("         " + (r + 1).ToString().PadLeft(2) + "   ║");
                     // LEFT GRID — what the player sees of the bot
                     for (int c = 0; c < size; c++)
                     {
@@ -112,11 +112,11 @@ namespace BattleShip
 
                     if (r < size - 1)
                     {
-                        Console.WriteLine("     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣         ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+                        Console.WriteLine("              ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣         ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
                     }
                 }
 
-                Console.WriteLine("     ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝         ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+                Console.WriteLine("              ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝         ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
             }
         }
 

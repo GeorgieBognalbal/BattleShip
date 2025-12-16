@@ -21,11 +21,9 @@ namespace BattleShip
         // Reference to the bot's board (ships placed)
         public char[,] Hidden_BotBoard = new char[10, 10];
 
-        // Place ships onto the bot's hidden board.
-        // The Board parameter is optional for linking the Bot to a Board instance.
+        // Method to place ships RANDOMLY on the bot's board
         public void PlaceShips(Board board = null)
         {
-            // Associate passed board if provided
             if (board != null)
             {
                 this.Board = board;
@@ -54,8 +52,9 @@ namespace BattleShip
                     attempts++;
                     int r = _random.Next(0, gridSize);
                     int c = _random.Next(0, gridSize);
-                    Orientation orientation = (Orientation)_random.Next(0, 2); // 0 or 1
+                    Orientation orientation = (Orientation)_random.Next(0, 2); // 0 or 1 for Horizontal/Vertical
 
+                    // check if ship can be placed
                     if (CanPlaceShip(Hidden_BotBoard, shipSize, r, c, orientation))
                     {
                         bool isHorizontal = orientation == Orientation.Horizontal;
@@ -77,6 +76,7 @@ namespace BattleShip
             }
         }
 
+        // method to check if coordinates are valid for ship placement
         public bool CanPlaceShip(char[,] board, int shipSize, int row, int col, Orientation orientation)
         {
             int gridSize = board.GetLength(0);
@@ -107,9 +107,9 @@ namespace BattleShip
             return true;
         }
 
+        // afer checking everything, bot make a move
         public (int row, int col) MakeMove(Board playerBoard)
         {
-            // Optionally use playerBoard for more advanced heuristics; not used here.
             (int row, int col) shot;
 
             if (_isHunting)
@@ -151,7 +151,7 @@ namespace BattleShip
                 }
             }
 
-            // Fallback: scan board for first unknown cell
+            // Just incase it fails to find a random valid shot, do a full scan
             for (int r = 0; r < gridSize; r++)
             {
                 for (int c = 0; c < gridSize; c++)
@@ -163,7 +163,7 @@ namespace BattleShip
                 }
             }
 
-            // No valid shot found
+            // if valid shot found
             return (-1, -1);
         }
 
@@ -193,8 +193,6 @@ namespace BattleShip
 
         public bool IsUnknownOnDisplay(int row, int col)
         {
-            // If Board is assigned and has a Display_BotBoard we respect it.
-            // Otherwise treat all non-fired cells as unknown.
             if (this.Board != null)
             {
                 try
@@ -207,14 +205,13 @@ namespace BattleShip
                 }
                 catch
                 {
-                    // If Board.Display_BotBoard is not available or throws, fallback to unknown.
+                    // another fallback just incase of any error
                 }
             }
-
-            // Fallback: if we don't know the display, check shotsFired to determine unknown.
             return !shotsFired[row, col];
         }
 
+        // this is updates the bot after each shot
         public void ProcessShotResult(int row, int col, char result, bool shipSunk)
         {
             // Mark shot as fired locally

@@ -112,8 +112,10 @@ namespace BattleShip
 
                     Console.SetCursorPosition(33, 24);
                     Console.WriteLine($"Placing {ship.Name} (length {ship.Length})");
+
                     Console.SetCursorPosition(33, 25);
                     Console.WriteLine($"Enter Coordinate (A1): ");
+
                     Console.SetCursorPosition(33, 26);
                     Console.WriteLine($"Orientation (H/V)    : ");
 

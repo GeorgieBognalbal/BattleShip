@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace BattleShip
 {
+    
     public class Design
     {
         public void BotPlacing()
@@ -26,18 +28,19 @@ namespace BattleShip
         public void GameStart_Header()
         {
             Console.WriteLine(GREEN + @"
-         _______  _______  __   __  _______    _______  _______  _______  ______    _______  __  
-        |       ||   _   ||  |_|  ||       |  |       ||       ||   _   ||    _ |  |       ||  | 
-        |    ___||  |_|  ||       ||    ___|  |  _____||_     _||  |_|  ||   | ||  |_     _||  | 
-        |   | __ |       ||       ||   |___   | |_____   |   |  |       ||   |_||_   |   |  |  | 
-        |   ||  ||       ||       ||    ___|  |_____  |  |   |  |       ||    __  |  |   |  |__| 
-        |   |_| ||   _   || ||_|| ||   |___    _____| |  |   |  |   _   ||   |  | |  |   |   __  
-        |_______||__| |__||_|   |_||_______|  |_______|  |___|  |__| |__||___|  |_|  |___|  |__| 
+            _______  _______  __   __  _______    _______  _______  _______  ______    _______  __  
+           |       ||   _   ||  |_|  ||       |  |       ||       ||   _   ||    _ |  |       ||  | 
+           |    ___||  |_|  ||       ||    ___|  |  _____||_     _||  |_|  ||   | ||  |_     _||  | 
+           |   | __ |       ||       ||   |___   | |_____   |   |  |       ||   |_||_   |   |  |  | 
+           |   ||  ||       ||       ||    ___|  |_____  |  |   |  |       ||    __  |  |   |  |__| 
+           |   |_| ||   _   || ||_|| ||   |___    _____| |  |   |  |   _   ||   |  | |  |   |   __  
+           |_______||__| |__||_|   |_||_______|  |_______|  |___|  |__| |__||___|  |_|  |___|  |__| 
 " + RESET);
         }
 
         public void MainMenu()
         {
+         
             string[,] menu =
                 {
                 {@" ███████████             █████     █████    ████            █████████  █████       ███           "},
@@ -87,7 +90,46 @@ namespace BattleShip
             }
         }
 
+        public void botWon()
+        {
+            Console.WriteLine(RED + @"
+                                                     
+                             ▄▄▄▄    ▒█████  ▄▄▄█████▓    █     █░ ▒█████   ███▄    █ 
+                            ▓█████▄ ▒██▒  ██▒▓  ██▒ ▓▒   ▓█░ █ ░█░▒██▒  ██▒ ██ ▀█   █ 
+                            ▒██▒ ▄██▒██░  ██▒▒ ▓██░ ▒░   ▒█░ █ ░█ ▒██░  ██▒▓██  ▀█ ██▒
+                            ▒██░█▀  ▒██   ██░░ ▓██▓ ░    ░█░ █ ░█ ▒██   ██░▓██▒  ▐▌██▒
+                            ░▓█  ▀█▓░ ████▓▒░  ▒██▒ ░    ░░██▒██▓ ░ ████▓▒░▒██░   ▓██░
+                            ░▒▓███▀▒░ ▒░▒░▒░   ▒ ░░      ░ ▓░▒ ▒  ░ ▒░▒░▒░ ░ ▒░   ▒ ▒ 
+                            ▒░▒   ░   ░ ▒ ▒░     ░         ▒ ░ ░    ░ ▒ ▒░ ░ ░░   ░ ▒░
+                             ░    ░ ░ ░ ░ ▒    ░           ░   ░  ░ ░ ░ ▒     ░   ░ ░ 
+                             ░          ░ ░                  ░        ░ ░           ░ 
+                                      ░                                                   
+                                      PRESS ANY KEY TO RETURN TO TITLE SCREEN   
+" + RESET);
+        }
 
+        public void playerWon()
+        {
+            Console.WriteLine(GREEN + @"
+      oooooo   oooo   .oooooo.   ooooo     ooo      oooooo   oooooo     oooo   .oooooo.   ooooo      ooo .o. 
+       `888.   .8'   d8P'  `Y8b  `888'     `8'       `888.    `888.     .8'   d8P'  `Y8b  `888b.     `8' 888 
+        `888. .8'   888      888  888       8         `888.   .8888.   .8'   888      888  8 `88b.    8  888 
+         `888.8'    888      888  888       8          `888  .8'`888. .8'    888      888  8   `88b.  8  Y8P 
+          `888'     888      888  888       8           `888.8'  `888.8'     888      888  8     `88b.8  `8' 
+           888      `88b    d88'  `88.    .8'            `888'    `888'      `88b    d88'  8       `888  .o. 
+          o888o      `Y8bood8P'     `YbodP'               `8'      `8'        `Y8bood8P'  o8o        `8  Y8P         
+
+                                      PRESS ANY KEY TO RETURN TO TITLE SCREEN
+" + RESET);
+        }
+        public void battleBanner()
+        {
+            Console.WriteLine(@"                                                                                                                                                                                    
+                    █████▄ ▄████▄ ██████                        █████▄ ██     ▄████▄ ██  ██ ██████ █████▄  
+                    ██▄▄██ ██  ██   ██                          ██▄▄█▀ ██     ██▄▄██  ▀██▀  ██▄▄   ██▄▄██▄ 
+                    ██▄▄█▀ ▀████▀   ██                          ██     ██████ ██  ██   ██   ██▄▄▄▄ ██   ██                                                                             
+");
+        }
 
             
         public void Tutorial()
@@ -256,13 +298,23 @@ namespace BattleShip
                               └────────────────────────────────────────────┘                                                                               
 └────────────────────────────────────────────────────────────────────────────────────────────────────────────┘");
         }
+
+        public void BattleBoader()
+        {
+            Console.WriteLine(@"
+                                    ┌────────────────────────────────────────────┐                                  
+                                    │                                            │                                  
+                                    └────────────────────────────────────────────┘                           
+");
+        }
+
             /*
                 DESCRIPTION : 
                     This class is for the global inventory or storage of ASCII ARTS and ASSETS variable
             */
 
-            // -- RESET
-            public static string RESET = "\u001b[0m";
+        // -- RESET
+            public string RESET = "\u001b[0m";
 
             // -- TEXT COLOR
             public string RED = "\u001b[31m";

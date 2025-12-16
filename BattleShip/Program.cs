@@ -36,7 +36,7 @@ namespace BattleShip
             var gameFlow = new GameFlow(board, design, pm, battleLogic);
 
             // Play background music
-            string Music = AppDomain.CurrentDomain.BaseDirectory + @"Assets\the-last-point-beat-electronic-digital-394291.wav";
+            string Music = AppDomain.CurrentDomain.BaseDirectory + @"Assets\the-last-point-beat-electronic-digital-394291.wav"; //music file path
             SoundPlayer soundPlayer = new SoundPlayer();
             soundPlayer.SoundLocation = Music;
             soundPlayer.PlayLooping();

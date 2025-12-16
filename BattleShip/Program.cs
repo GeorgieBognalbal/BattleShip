@@ -1,12 +1,13 @@
 ﻿using BattleShip;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Media;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using WindowsInput;
 using WindowsInput.Native;
-using System.Media;
-using System.Runtime.CompilerServices;
 
 namespace BattleShip
 {
@@ -36,10 +37,11 @@ namespace BattleShip
             var gameFlow = new GameFlow(board, design, pm, battleLogic);
 
             // Play background music
-            string Music = AppDomain.CurrentDomain.BaseDirectory + @"Assets\the-last-point-beat-electronic-digital-394291.wav"; //music file path
-            SoundPlayer soundPlayer = new SoundPlayer();
-            soundPlayer.SoundLocation = Music;
-            soundPlayer.PlayLooping();
+            string musicFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "BgMusic.wav");
+            SoundPlayer player = new SoundPlayer(musicFilePath);
+            Console.WriteLine(musicFilePath);
+            player.Load();
+            player.PlayLooping();
 
             //Show main menu
             design.boarder();

@@ -39,7 +39,6 @@ namespace BattleShip
             // Play background music
             string musicFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "BgMusic.wav");
             SoundPlayer player = new SoundPlayer(musicFilePath);
-            Console.WriteLine(musicFilePath);
             player.Load();
             player.PlayLooping();
 
@@ -48,7 +47,7 @@ namespace BattleShip
             design.MainMenu();
             design.MenuOptions();
 
-            var key = Console.ReadKey(true);
+            var key = Console.ReadKey();
 
             if (key.Key == ConsoleKey.Enter)
             {
@@ -56,13 +55,13 @@ namespace BattleShip
 
                 // List of ships to place
                 var ships = new List<Ship>()
-            {
+                {
                 new Ship("Destroyer", 2, Orientation.Horizontal),
                 new Ship("Submarine", 3, Orientation.Horizontal),
                 new Ship("Cruiser", 3, Orientation.Horizontal),
                 new Ship("Battleship", 4, Orientation.Horizontal),
                 new Ship("Carrier", 5, Orientation.Horizontal)
-            };
+                };
 
 
 
@@ -91,9 +90,9 @@ namespace BattleShip
                 design.OverviewBoader();
                 board.Draw(true);
 
-                var inputStart = Console.ReadKey(true);
+                var inputStart = Console.ReadKey().Key;
 
-                if (inputStart.Key == ConsoleKey.Enter)
+                if (inputStart == ConsoleKey.Enter)
                 {
                     Console.CursorVisible = false;
                     Console.Clear();
@@ -109,22 +108,26 @@ namespace BattleShip
 
                     gameFlow.GameStart();
                     return;   // stops code from falling through to main menu
-                }
-                else if (inputStart.Key == ConsoleKey.T)
-                {
-                    Console.CursorVisible = false;
 
-                    Console.Clear();
-                    design.Tutorial();
-                    Console.ReadKey(true);
-                    Console.Clear();
-                    design.MainMenu();
                 }
-                else if (inputStart.Key == ConsoleKey.Escape)
-                {
-                    Environment.Exit(0);
-                }
+
             }
+            else if (key.Key == ConsoleKey.T)
+            {
+                Console.Clear();
+                for (int i = 0; i < 5; i++)
+                {
+                    inputSimulator.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.OEM_PLUS);
+                    Thread.Sleep(10);
+                }
+                design.Tutorial();
+                Console.ReadKey(true);
+            }
+            else if (key.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(0);
+            }
+
         }
     }
 }

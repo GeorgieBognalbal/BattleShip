@@ -43,7 +43,8 @@ namespace BattleShip
 
         public void MainMenu()
         {
-         
+            boarder();
+
             string[,] menu =
                 {
                 {@" ███████████             █████     █████    ████            █████████  █████       ███           "},
@@ -70,6 +71,8 @@ namespace BattleShip
 
                 y++;
             }
+
+            MenuOptions();
         }
 
         public void MenuOptions()

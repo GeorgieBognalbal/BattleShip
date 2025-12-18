@@ -51,6 +51,7 @@
     <Compile Include="Bot.cs" />
     <Compile Include="Design.cs" />
     <Compile Include="GameFlow.cs" />
+    <Compile Include="GameStart.cs" />
     <Compile Include="Placement.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Program.cs" />

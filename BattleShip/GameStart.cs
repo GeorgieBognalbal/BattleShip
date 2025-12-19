@@ -18,6 +18,7 @@ namespace BattleShip
             var inputSimulator = new InputSimulator();
 
             var board = new Board();
+            board.InitializeBoard();
             var design = new Design();
 
             var placement = new Placement(board);
@@ -25,6 +26,7 @@ namespace BattleShip
 
             var bot = new Bot();
             var gameFlow = new GameFlow(board, design, pm, new BattleLogic(board, bot));
+
 
             //Show main menu
             design.MainMenu();
@@ -46,11 +48,12 @@ namespace BattleShip
                 };
 
 
-                // --- PLAYER SHIP PLACEMENT ---
                 for (int i = 0; i < 5; i++)
                 {
                     inputSimulator.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.OEM_PLUS);
                 }
+
+                // --- PLAYER SHIP PLACEMENT ---
                 pm.PlaceAllShips(board, ships);
 
                 // --- BOT SHIP PLACEMENT ---

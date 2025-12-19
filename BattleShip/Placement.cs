@@ -124,7 +124,7 @@ namespace BattleShip
 
                     if (!IsValidInput(input))
                     {
-                        Console.WriteLine("│  Invalid input!");
+                        Console.WriteLine("  Invalid input!");
                         Console.ReadKey(true);
                         continue;
                     }

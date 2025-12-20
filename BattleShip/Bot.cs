@@ -107,7 +107,7 @@ namespace BattleShip
             return true;
         }
 
-        // afer checking everything, bot make a move
+        // after checking everything, bot make a move
         public (int row, int col) MakeMove(Board playerBoard)
         {
             (int row, int col) shot;

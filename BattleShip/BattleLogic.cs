@@ -1,5 +1,6 @@
 ﻿using BattleShip;
 using System;
+using System.Data.SqlClient;
 using System.Threading;
 
 namespace BattleShip
@@ -74,6 +75,7 @@ namespace BattleShip
         // PLAYER TURN:
         public bool PlayerTurn(int row, int col)
         {
+
             if (!InBounds(row, col))
             {
                 Console.SetCursorPosition(45, 30);
@@ -122,7 +124,7 @@ namespace BattleShip
             Console.WriteLine(design.RED_BG + "MISS!" + design.RESET);
             Thread.Sleep(1000);
             Bot?.ProcessShotResult(row, col, 'M', false);
-            return true;
+            return false;
         }
 
         // BOT TURN:

@@ -55,35 +55,34 @@ namespace BattleShip
                 int row = int.Parse(input.Substring(1)) - 1;
 
                 // Player turn
-                bool valid = _battleLogic.PlayerTurn(row, col);
-                if (!valid)
+                bool hit = _battleLogic.PlayerTurn(row, col);
+
+                if (!hit)
                 {
                     Console.SetCursorPosition(45, 30);
-                    Console.WriteLine("Try again.");
                     Thread.Sleep(1000);
-                    continue; // DO NOT let bot fire
                 }
+
                 // Check win for player
                 if (_battleLogic.BotShips == 0)
                 {
                     Console.Clear();
-                    Console.SetCursorPosition(0, 10);
                     _design.playerWon();
                     Console.ReadKey(true);
                     return;
                 }
 
-                if (_board.Hidden_BotBoard[row, col] == 'S')
+                if (hit)
                 {
-                    continue; // Player gets another turn on hit
+                    //loop back for another shot
+                    continue;
                 }
 
-                    // Bot turn
-                    _battleLogic.BotTurn();
+                // Bot turn
+                _battleLogic.BotTurn();
 
-
-                    // Display boards after bot move
-                    Console.Clear();
+                // Display boards after bot move
+                Console.Clear();
                 Board.BoardDisplay.ShowSideBySide(_board);
 
                 // Check win for bot

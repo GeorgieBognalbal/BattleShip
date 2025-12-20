@@ -12,6 +12,7 @@ namespace BattleShip
         private readonly Design _design;
         private readonly PlacementManager _placementManager;
         private readonly BattleLogic _battleLogic;
+        private readonly Bot _bot;
 
         public GameFlow(Board board, Design design, PlacementManager placementManager, BattleLogic battleLogic)
         {
@@ -19,6 +20,7 @@ namespace BattleShip
             _design = design ?? throw new ArgumentNullException(nameof(design));
             _placementManager = placementManager ?? throw new ArgumentNullException(nameof(placementManager));
             _battleLogic = battleLogic ?? throw new ArgumentNullException(nameof(battleLogic));
+            _bot = battleLogic.Bot ?? throw new ArgumentNullException(nameof(battleLogic.Bot));
         }
 
         public void GameStart()
@@ -61,7 +63,6 @@ namespace BattleShip
                     Thread.Sleep(1000);
                     continue; // DO NOT let bot fire
                 }
-
                 // Check win for player
                 if (_battleLogic.BotShips == 0)
                 {
@@ -72,11 +73,17 @@ namespace BattleShip
                     return;
                 }
 
-                // Bot turn
-                _battleLogic.BotTurn();
+                if (_board.Hidden_BotBoard[row, col] == 'S')
+                {
+                    continue; // Player gets another turn on hit
+                }
 
-                // Display boards after bot move
-                Console.Clear();
+                    // Bot turn
+                    _battleLogic.BotTurn();
+
+
+                    // Display boards after bot move
+                    Console.Clear();
                 Board.BoardDisplay.ShowSideBySide(_board);
 
                 // Check win for bot

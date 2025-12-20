@@ -153,7 +153,14 @@ namespace BattleShip
                 Console.SetCursorPosition(45, 30);
                 Console.WriteLine(design.GREEN_BG + $"BOT hits at {r + 1},{c + 1}" + design.RESET);
                 Thread.Sleep(1000);
+
+                Console.Clear();
+                design.battleBanner();
+                Board.BoardDisplay.ShowSideBySide(Board);
+                BotTurn();
+
             }
+
             else
             {
                 // Miss - mark player's display if not already marked

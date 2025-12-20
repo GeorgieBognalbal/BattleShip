@@ -42,7 +42,6 @@ namespace BattleShip
         //PLACEMENT STAGE BOARD=======================================================
         public void Draw(bool showShips)
         {
-
             int x = 2, y = 1;
             Console.SetCursorPosition(x, y);
             Console.WriteLine("                                  A   B   C   D   E   F   G   H   I   J  ");
